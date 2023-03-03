@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXIST ARTICLES
     author_id           VARCHAR(64) NOT NULL,
     title               VARCHAR(255) NOT NULL,
     description         VARCHAR(128) NOT NULL,
-    content             VARCHAR(255),
+    content             VARCHAR(255) NOT NULL,
     favorites_count     INTEGER,
     created_at          TIMESTAMP,
     updated_at          TIMESTAMP
