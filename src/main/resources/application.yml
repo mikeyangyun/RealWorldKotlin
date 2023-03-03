@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: backend-real-world
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  jpa:
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
+    show-sql: true
+  datasource:
+    url: jdbc:postgres://localhost:3306/postgres
+    username: admin
+    password: password
+  flyway:
+    enabled: true
+    out-of-order: true
+    url: jdbc:postgres://localhost:3306/postgres
+    username: admin
+    password: password
+    clean-disabled: true
+    locations: classpath:db/migration
+  mvc:
+    servlet:
+      path: /api
