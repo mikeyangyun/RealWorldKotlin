@@ -15,4 +15,12 @@ data class UserInfoPo(
     @Column(name = "password") val password: String,
     @Column(name = "bio") var bio: String?,
     @Column(name = "image") var image: String?,
-)
+) {
+    fun toDomain() = UserInfoEntity(
+        username = username,
+        email = email,
+        password = password,
+        bio = bio,
+        image = image
+    )
+}
