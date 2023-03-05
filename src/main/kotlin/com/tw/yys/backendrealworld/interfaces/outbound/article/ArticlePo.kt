@@ -17,6 +17,7 @@ data class ArticlePo(
     @Column(name = "description") var description: String,
     @Column(name = "content") var content: String,
     @Column(name = "favorites_count") var favoritesCount: Integer?,
+    @Column(name = "tags") var tags: String?,
     @Column(name = "created_at") val createdAt: Instant?,
     @Column(name = "updated_at") var updatedAt: Instant?
 )
