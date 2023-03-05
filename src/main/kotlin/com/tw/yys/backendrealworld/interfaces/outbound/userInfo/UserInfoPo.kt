@@ -17,6 +17,7 @@ data class UserInfoPo(
     @Column(name = "image") var image: String?,
 ) {
     fun toDomain() = UserInfoEntity(
+        id = id,
         username = username,
         email = email,
         password = password,
