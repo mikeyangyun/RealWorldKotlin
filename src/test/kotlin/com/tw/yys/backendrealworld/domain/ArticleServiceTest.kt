@@ -453,9 +453,11 @@ class ArticleServiceTest{
 
             val articleService = mockkClass(ArticleService::class)
             every { articleService.findArticleById(any()) } returns singleArticleProfileEntity
+            every { articleRepository.findArticleById(any()) } returns articleEntity
             every { userInfoRepository.findByUserName(any()) } returns userInfoEntity
+            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
 
-            val retrieveArticles = service.retrieveArticles("", authorName, limit, offset)
+            val retrieveArticles = service.retrieveArticles(tag, authorName, limit, offset)
 
             assertThat(retrieveArticles).isNotEmpty
             verify(inverse = true) {
