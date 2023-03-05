@@ -85,7 +85,7 @@ class ArticleService(
             }
         }
         if (tag.isNotEmpty() && authorName.isEmpty()) {
-            val articleEntityList = articleRepository.findArticleByTagAndLimitIsAndOffsetIs(tag, limit, offset)
+            val articleEntityList = articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, limit, offset)
             return articleEntityList.map {
                 findArticleById(it.articleId)
             }
@@ -93,7 +93,7 @@ class ArticleService(
         if (tag.isEmpty() && authorName.isNotEmpty()) {
             val user = userInfoRepository.findByUserName(authorName) ?: return emptyList()
 
-            val articleEntityList = articleRepository.findArticleByAuthorIdAndLimitIsAndOffsetIs(user.id, limit, offset)
+            val articleEntityList = articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(user.id, limit, offset)
 
             return articleEntityList.map {
                 findArticleById(it.articleId)
@@ -101,7 +101,7 @@ class ArticleService(
         }
         val user = userInfoRepository.findByUserName(authorName) ?: return emptyList()
 
-        val articleEntityList = articleRepository.findArticleByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, user.id, limit, offset)
+        val articleEntityList = articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, user.id, limit, offset)
         return articleEntityList.map {
             findArticleById(it.articleId)
         }
@@ -117,17 +117,17 @@ interface ArticleRepository{
         limit: Int,
         offset: Int
     ): List<ArticleEntity>
-    fun findArticleByTagAndLimitIsAndOffsetIs(
+    fun findAllArticlesByTagAndLimitIsAndOffsetIs(
         tag: String,
         limit: Int,
         offset: Int
     ): List<ArticleEntity>
-    fun findArticleByAuthorIdAndLimitIsAndOffsetIs(
+    fun findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(
         authorId: String,
         limit: Int,
         offset: Int
     ): List<ArticleEntity>
-    fun findArticleByTagAndAuthorIdAndLimitIsAndOffsetIs(
+    fun findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(
         tag: String,
         authorId: String,
         limit: Int,
