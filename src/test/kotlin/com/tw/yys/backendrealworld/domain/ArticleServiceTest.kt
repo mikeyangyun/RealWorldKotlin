@@ -246,6 +246,69 @@ class ArticleServiceTest{
             }
         }
 
+        @Test
+        fun `should return empty list given tag required and authorName not required when no articles exist`() {
+            every {
+                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+            } returns emptyList()
+
+            every { service.findArticleById(any()) } returns singleArticleProfileEntity
+
+            val retrieveArticles = service.retrieveArticles(tag, "", limit, offset)
+
+            assertThat(retrieveArticles).isEmpty()
+            verify {
+                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
+            }
+            verify(inverse = true) {
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+            }
+        }
+
+        @Test
+        fun `should return found articles given tag required and authorName not required when articles exist`() {
+            every {
+                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+            } returns listOf(articleEntity)
+            every {
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+            } returns emptyList()
+
+            val articleService = mockkClass(ArticleService::class)
+            every { articleService.findArticleById(any()) } returns singleArticleProfileEntity
+            every { articleRepository.findArticleById(any()) } returns articleEntity
+            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
+
+            val retrieveArticles = service.retrieveArticles("", "", limit, offset)
+
+            assertThat(retrieveArticles).isNotEmpty
+            verify {
+                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+            }
+            verify(inverse = true) {
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+            }
+        }
+
 
     }
 }
