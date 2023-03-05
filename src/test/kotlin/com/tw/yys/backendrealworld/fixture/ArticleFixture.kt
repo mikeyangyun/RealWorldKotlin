@@ -2,6 +2,7 @@ package com.tw.yys.backendrealworld.fixture
 
 import com.tw.yys.backendrealworld.domain.common.model.UserProfile
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.*
+import com.tw.yys.backendrealworld.interfaces.outbound.article.ArticleEntity
 import com.tw.yys.backendrealworld.interfaces.outbound.article.response.SingleArticleProfileEntity
 import java.time.Instant
 
@@ -53,6 +54,18 @@ object ArticleFixture {
         val singleArticleProfileEntity = SingleArticleProfileEntity(
             author = userProfile,
             articleId = 1,
+            title = "title",
+            description = "description",
+            content = "content",
+            tags = null,
+            favoritesCount = null,
+            createdAt = Instant.now(),
+            updatedAt = null
+        )
+
+        val articleEntity = ArticleEntity(
+            articleId = 1,
+            authorId = "fake id for test",
             title = "title",
             description = "description",
             content = "content",
