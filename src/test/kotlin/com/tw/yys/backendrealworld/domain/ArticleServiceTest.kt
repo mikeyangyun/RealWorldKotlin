@@ -280,10 +280,10 @@ class ArticleServiceTest{
         fun `should return found articles given tag required and authorName not required when articles exist`() {
             every {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-            } returns listOf(articleEntity)
+            } returns emptyList()
             every {
                 articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-            } returns emptyList()
+            } returns listOf(articleEntity)
             every {
                 articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
             } returns emptyList()
@@ -296,14 +296,14 @@ class ArticleServiceTest{
             every { articleRepository.findArticleById(any()) } returns articleEntity
             every { userInfoRepository.findUserById(any()) } returns userInfoEntity
 
-            val retrieveArticles = service.retrieveArticles("", "", limit, offset)
+            val retrieveArticles = service.retrieveArticles(tag, "", limit, offset)
 
             assertThat(retrieveArticles).isNotEmpty
             verify {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
             }
             verify(inverse = true) {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
                 articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
                 articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
             }
