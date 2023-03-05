@@ -27,6 +27,7 @@ data class ArticlePo(
     @Column(name = "updated_at") var updatedAt: Instant?
 ) {
     fun toDomain() = ArticleEntity(
+        articleId = id,
         authorId = authorId,
         title = title,
         description = description,

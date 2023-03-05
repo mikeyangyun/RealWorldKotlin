@@ -3,6 +3,7 @@ package com.tw.yys.backendrealworld.interfaces.outbound.article
 import java.time.Instant
 
 data class ArticleEntity(
+    val articleId: Long = 0,
     val authorId: String,
     val title: String,
     val description: String,

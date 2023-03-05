@@ -5,6 +5,7 @@ import com.tw.yys.backendrealworld.interfaces.inbound.dto.SingleArticleProfileRe
 import java.time.Instant
 
 data class SingleArticleProfileEntity(
+    val articleId: Long,
     val author: UserProfile,
     val title: String,
     val description: String,
@@ -15,6 +16,7 @@ data class SingleArticleProfileEntity(
     val updatedAt: Instant?
 ) {
     fun toDto() = SingleArticleProfileResponseDto(
+        articleId = articleId,
         author = author,
         title = title,
         description = description,

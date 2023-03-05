@@ -24,13 +24,14 @@ class ArticleService(
 
         return SingleArticleProfileEntity(
             author = author,
+            articleId = savedArticle.articleId,
             title = savedArticle.title,
             description = savedArticle.description,
             content = savedArticle.content,
             favoritesCount = savedArticle.favoritesCount,
             tags = savedArticle.tags,
             createdAt = savedArticle.createdAt,
-            updatedAt = savedArticle.updatedAt
+            updatedAt = savedArticle.updatedAt,
         )
     }
 }

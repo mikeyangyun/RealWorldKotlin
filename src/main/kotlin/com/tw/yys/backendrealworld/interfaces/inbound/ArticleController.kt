@@ -5,6 +5,7 @@ import com.tw.yys.backendrealworld.application.article.ArticleQueryUseCase
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewArticleRequest
 import com.tw.yys.backendrealworld.interfaces.outbound.article.response.ArticleResponse
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
@@ -24,5 +25,14 @@ class ArticleController(
     ): ArticleResponse {
         return articleModifyUseCase.createNewArticle(userId, request).toResponse()
     }
+
+//    @PostMapping("/article/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    fun updateArticle(
+//        @PathVariable id: String,
+//        @RequestBody request: CreateNewArticleRequest
+//    ): ArticleResponse {
+//        return articleModifyUseCase.createNewArticle(userId, request).toResponse()
+//    }
 
 }

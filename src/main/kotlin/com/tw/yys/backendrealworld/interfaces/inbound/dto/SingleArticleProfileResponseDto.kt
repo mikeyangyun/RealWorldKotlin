@@ -5,6 +5,7 @@ import com.tw.yys.backendrealworld.interfaces.outbound.article.response.ArticleR
 import java.time.Instant
 
 data class SingleArticleProfileResponseDto(
+    val articleId : Long,
     val author: UserProfile,
     val title: String,
     val description: String,
