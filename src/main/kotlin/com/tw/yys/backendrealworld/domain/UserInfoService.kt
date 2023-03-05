@@ -15,7 +15,7 @@ class UserInfoService(
         val existingUsername = repository.findByUserName(command.username)
         val existingEmail = repository.findByEmail(command.email)
 
-        if (existingEmail != null && existingEmail != null) throw ExistingUserAccountInfoException()
+        if (existingUsername != null && existingEmail != null) throw ExistingUserAccountInfoException()
         if (existingUsername != null) throw ExistingUserNameException()
         if (existingEmail != null) throw ExistingEmailException()
 
