@@ -1,42 +1,42 @@
-name: Deploy myapp with Terraform
-
-on:
-  workflow_dispatch:
-
-jobs:
-  deploy_terraform:
-    name: Deploy with terraform
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v1
-
-      - name: install aws cli
-        run: sudo apt-get update && sudo apt-get install -y awscli
-
-      - name: Set up AWS credentials
-        run: |
-          mkdir -p ~/.aws
-          touch ~/.aws/credentials
-          echo "[default]
-          aws_access_key_id = ${AWS_ACCESS_KEY_ID}
-          aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/credentials
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-
-      - name: "Format terraform"
-        run: cd ./deployment && terraform fmt
-
-      - name: "Initialize terraform"
-        run: cd ./deployment && terraform init
-
-      - name: "Validate terraform"
-        run: cd ./deployment && terraform validate
-
-      - name: "Run terraform apply"
-        run: cd ./deployment && terraform apply -auto-approve
-
-
-
+#name: Deploy myapp with Terraform
+#
+#on:
+#  workflow_dispatch:
+#
+#jobs:
+#  deploy_terraform:
+#    name: Deploy with terraform
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: hashicorp/setup-terraform@v1
+#
+#      - name: install aws cli
+#        run: sudo apt-get update && sudo apt-get install -y awscli
+#
+#      - name: Set up AWS credentials
+#        run: |
+#          mkdir -p ~/.aws
+#          touch ~/.aws/credentials
+#          echo "[default]
+#          aws_access_key_id = ${AWS_ACCESS_KEY_ID}
+#          aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/credentials
+#        env:
+#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#
+#
+#      - name: "Format terraform"
+#        run: cd ./deployment && terraform fmt
+#
+#      - name: "Initialize terraform"
+#        run: cd ./deployment && terraform init
+#
+#      - name: "Validate terraform"
+#        run: cd ./deployment && terraform validate
+#
+#      - name: "Run terraform apply"
+#        run: cd ./deployment && terraform apply -auto-approve
+#
+#
+#
