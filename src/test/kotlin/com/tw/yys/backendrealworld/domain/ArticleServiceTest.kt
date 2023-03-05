@@ -372,6 +372,34 @@ class ArticleServiceTest{
             }
         }
 
+        @Test
+        fun `should return empty list given tag required and authorName required when no articles exist`() {
+            every {
+                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+            } returns emptyList()
+
+            every { service.findArticleById(any()) } returns singleArticleProfileEntity
+
+            val retrieveArticles = service.retrieveArticles(tag, authorName, limit, offset)
+
+            assertThat(retrieveArticles).isEmpty()
+            verify {
+                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+            }
+        }
+
 
     }
 }
