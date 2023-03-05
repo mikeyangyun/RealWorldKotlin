@@ -15,7 +15,11 @@ class ArticleModifyUseCase(
     }
 
     fun updateArticle(articleId: Long, request: UpdateArticleRequest): SingleArticleProfileResponseDto {
-        return service.updateArticle(articleId, request)
+        return service.updateArticle(articleId, request).toDto()
+    }
+
+    fun deleteArticleById(articleId: Long) {
+        service.deleteArticleById(articleId)
     }
 
 }

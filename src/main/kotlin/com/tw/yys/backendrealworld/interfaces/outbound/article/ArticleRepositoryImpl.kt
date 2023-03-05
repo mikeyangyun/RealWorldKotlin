@@ -14,5 +14,9 @@ class ArticleRepositoryImpl(
     override fun findArticleById(articleId: Long): ArticleEntity? {
         return dao.findTopById(articleId)?.toDomain()
     }
+
+    override fun deleteArticleById(articleId: Long) {
+        dao.deleteArticlePoById(articleId)
+    }
 }
 

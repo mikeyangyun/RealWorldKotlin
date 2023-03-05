@@ -4,7 +4,6 @@ import com.tw.yys.backendrealworld.domain.common.errors.ArticleNotFoundException
 import com.tw.yys.backendrealworld.domain.common.errors.UserNotFoundException
 import com.tw.yys.backendrealworld.domain.common.model.UserProfile
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewArticleRequest
-import com.tw.yys.backendrealworld.interfaces.inbound.dto.SingleArticleProfileResponseDto
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateArticleRequest
 import com.tw.yys.backendrealworld.interfaces.outbound.article.ArticleEntity
 import com.tw.yys.backendrealworld.interfaces.outbound.article.response.SingleArticleProfileEntity
@@ -40,7 +39,7 @@ class ArticleService(
         updatedAt = savedArticle.updatedAt,
     )
 
-    fun updateArticle(articleId: Long, request: UpdateArticleRequest): SingleArticleProfileResponseDto {
+    fun updateArticle(articleId: Long, request: UpdateArticleRequest): SingleArticleProfileEntity {
         val existingArticle = articleRepository.findArticleById(articleId) ?: throw ArticleNotFoundException()
 
         val existingUser = userInfoRepository.findUserById(existingArticle.authorId) ?: throw UserNotFoundException()
@@ -53,7 +52,7 @@ class ArticleService(
         )
         articleRepository.save(updated)
 
-        return singleArticleProfileEntity(author, updated).toDto()
+        return singleArticleProfileEntity(author, updated)
     }
 
     private fun getUserProfile(existingUser: UserInfoEntity): UserProfile {
@@ -64,10 +63,24 @@ class ArticleService(
         )
         return author
     }
+
+    fun findArticleById(articleId: Long): SingleArticleProfileEntity {
+        val foundArticle = articleRepository.findArticleById(articleId) ?: throw ArticleNotFoundException()
+        val existingUser = userInfoRepository.findUserById(foundArticle.authorId) ?: throw UserNotFoundException()
+
+        val author = getUserProfile(existingUser)
+
+        return singleArticleProfileEntity(author,foundArticle)
+    }
+
+    fun deleteArticleById(articleId: Long) {
+        articleRepository.deleteArticleById(articleId)
+    }
 }
 
 interface ArticleRepository{
     fun save(entity: ArticleEntity): ArticleEntity
     fun findArticleById(articleId: Long): ArticleEntity?
+    fun deleteArticleById(articleId: Long)
 
 }

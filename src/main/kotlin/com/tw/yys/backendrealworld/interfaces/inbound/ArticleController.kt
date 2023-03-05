@@ -6,6 +6,8 @@ import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewArticleReques
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateArticleRequest
 import com.tw.yys.backendrealworld.interfaces.outbound.article.response.ArticleResponse
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -35,5 +37,24 @@ class ArticleController(
     ): ArticleResponse {
         return articleModifyUseCase.updateArticle(id, request).toResponse()
     }
+
+    @GetMapping("/articles/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateArticle(
+        @PathVariable id: Long,
+    ): ArticleResponse {
+        return articleQueryUseCase.findArticleById(id).toResponse()
+    }
+
+    @DeleteMapping("/articles/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun deleteArticle(
+        @PathVariable id: Long,
+    ) {
+        articleModifyUseCase.deleteArticleById(id)
+    }
+
+
+
 
 }
