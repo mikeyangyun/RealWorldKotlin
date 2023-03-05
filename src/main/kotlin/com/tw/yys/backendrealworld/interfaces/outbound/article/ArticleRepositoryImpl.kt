@@ -26,7 +26,7 @@ class ArticleRepositoryImpl(
         return dao.findAllArticlesLimitIsAndOffsetIs(limit, offset).map { it.toDomain() }
     }
 
-    override fun findArticleByAuthorIdAndLimitIsAndOffsetIs(
+    override fun findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(
         authorId: String,
         limit: Int,
         offset: Int
@@ -34,7 +34,7 @@ class ArticleRepositoryImpl(
         return dao.findArticleByAuthorIdAndLimitIsAndOffsetIs(authorId, limit, offset).map { it.toDomain() }
     }
 
-    override fun findArticleByTagAndAuthorIdAndLimitIsAndOffsetIs(
+    override fun findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(
         tag: String,
         authorId: String,
         limit: Int,
@@ -43,7 +43,7 @@ class ArticleRepositoryImpl(
         return dao.findArticleByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, limit, offset).map { it.toDomain() }
     }
 
-    override fun findArticleByTagAndLimitIsAndOffsetIs(
+    override fun findAllArticlesByTagAndLimitIsAndOffsetIs(
         tag: String,
         limit: Int,
         offset: Int
