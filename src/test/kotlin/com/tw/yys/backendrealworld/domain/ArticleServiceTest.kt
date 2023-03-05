@@ -179,6 +179,7 @@ class ArticleServiceTest{
         private val limit = 20
         private val offset = 1
 
+        private val userInfoEntity = UserInfoFixture.Default.userInfoEntity
         private val articleEntity = ArticleFixture.Default.articleEntity
         private val singleArticleProfileEntity = ArticleFixture.Default.singleArticleProfileEntity
 
@@ -227,7 +228,10 @@ class ArticleServiceTest{
                 articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
             } returns emptyList()
 
-            every { service.findArticleById(any()) } returns singleArticleProfileEntity
+            val articleService = mockkClass(ArticleService::class)
+            every { articleService.findArticleById(any()) } returns singleArticleProfileEntity
+            every { articleRepository.findArticleById(any()) } returns articleEntity
+            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
 
             val retrieveArticles = service.retrieveArticles("", "", limit, offset)
 
@@ -241,6 +245,7 @@ class ArticleServiceTest{
                 articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
             }
         }
+
 
     }
 }
