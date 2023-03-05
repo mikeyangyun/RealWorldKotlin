@@ -1,5 +1,6 @@
 package com.tw.yys.backendrealworld.interfaces.inbound.dto
 
+import com.tw.yys.backendrealworld.domain.common.EntityId
 import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoEntity
 
 data class CreateNewAccountRequest(
@@ -8,6 +9,7 @@ data class CreateNewAccountRequest(
     val password: String
 ) {
     fun toEntity(): UserInfoEntity = UserInfoEntity(
+        id = EntityId.newId().toString(),
         username = username,
         email = email,
         password = password,

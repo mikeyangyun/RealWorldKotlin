@@ -1,9 +1,9 @@
 package com.tw.yys.backendrealworld.interfaces.outbound.userInfo
 
-import com.tw.yys.backendrealworld.domain.common.EntityId
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UserInfoResponseDto
 
 data class UserInfoEntity(
+    val id: String,
     val username: String,
     val email: String,
     val password: String,
@@ -11,7 +11,7 @@ data class UserInfoEntity(
     val image: String?
 ) {
     fun toPo(): UserInfoPo = UserInfoPo(
-        id = EntityId.newId().toString(),
+        id = id,
         username = username,
         email = email,
         password = password,
