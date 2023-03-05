@@ -11,4 +11,10 @@ class UserInfoRepositoryImpl(
         return dao.save(entity.toPo()).toDomain()
     }
 
+    override fun findByUserName(userName: String): UserInfoEntity? {
+        return dao.findTopByUsername(userName)?.toDomain()
+    }
+    override fun findByEmail(email: String): UserInfoEntity? {
+        return dao.findTopByEmail(email)?.toDomain()
+    }
 }

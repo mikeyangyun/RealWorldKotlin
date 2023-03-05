@@ -5,4 +5,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserInfoDao : JpaRepository<UserInfoPo, String> {
+    fun findTopByUsername(userName: String): UserInfoPo?
+
+    fun findTopByEmail(email: String): UserInfoPo?
+
 }
