@@ -172,4 +172,42 @@ class ArticleServiceTest{
         }
     }
 
+    @Nested
+    inner class WhenRetrieveArticles {
+        private val tag = "tag"
+        private val authorName = "name"
+        private val limit = 20
+        private val offset = 1
+
+        private val articleEntity = ArticleFixture.Default.articleEntity
+        private val userInfoEntity = UserInfoFixture.Default.userInfoEntity
+
+        @Test
+        fun `should return empty list given tag and authorName not required when no articles exist`() {
+            every {
+                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+            } returns emptyList()
+            every {
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+            } returns emptyList()
+
+            val retrieveArticles = service.retrieveArticles("", "", limit, offset)
+
+            assertThat(retrieveArticles).isEmpty()
+            verify {
+                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+            }
+            verify(inverse = true) {
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+            }
+        }
+    }
 }
