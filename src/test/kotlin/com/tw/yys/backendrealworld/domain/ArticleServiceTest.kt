@@ -70,6 +70,7 @@ class ArticleServiceTest{
         fun `should throw ArticleNotFoundException given article not found by articleId`() {
             every { articleRepository.findArticleById(any()) } returns null
             every { userInfoRepository.findUserById(any()) } returns null
+            every { articleRepository.save(any()) } returns articleEntity
 
             assertThrows<ArticleNotFoundException> {
                 service.updateArticle(1, request)
@@ -84,6 +85,7 @@ class ArticleServiceTest{
         fun `should throw UserNotFoundException given user not found by userId`() {
             every { articleRepository.findArticleById(any()) } returns articleEntity
             every { userInfoRepository.findUserById(any()) } returns null
+            every { articleRepository.save(any()) } returns articleEntity
 
             assertThrows<UserNotFoundException> {
                 service.updateArticle(1, request)
@@ -100,17 +102,63 @@ class ArticleServiceTest{
         fun `should return updated article profile given update article successfully`() {
             every { articleRepository.findArticleById(any()) } returns articleEntity
             every { userInfoRepository.findUserById(any()) } returns userInfoEntity
+            every { articleRepository.save(any()) } returns articleEntity
 
             val singleArticleProfileEntity = service.updateArticle(1, request)
             verify {
                 articleRepository.save(any())
             }
 
-            assertThat(singleArticleProfileEntity.content).isEqualTo("new content")
+            assertThat(singleArticleProfileEntity.content).isEqualTo(request.content)
         }
     }
 
+    @Nested
+    inner class WhenFindArticleById {
+        private val articleEntity = ArticleFixture.Default.articleEntity
+        private val userInfoEntity = UserInfoFixture.Default.userInfoEntity
 
+        @Test
+        fun `should throw ArticleNotFoundException given article not found by articleId`() {
+            every { articleRepository.findArticleById(any()) } returns null
+            every { userInfoRepository.findUserById(any()) } returns null
+
+            assertThrows<ArticleNotFoundException> {
+                service.findArticleById(1)
+            }
+            verify(inverse = true) {
+                userInfoRepository.findUserById(any())
+            }
+        }
+
+        @Test
+        fun `should throw UserNotFoundException given user not found by userId`() {
+            every { articleRepository.findArticleById(any()) } returns articleEntity
+            every { userInfoRepository.findUserById(any()) } returns null
+
+            assertThrows<UserNotFoundException> {
+                service.findArticleById(1)
+            }
+            verify {
+                articleRepository.findArticleById(1)
+            }
+        }
+
+        @Test
+        fun `should return found article profile given article exist`() {
+            every { articleRepository.findArticleById(any()) } returns articleEntity
+            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
+
+            val singleArticleProfileEntity = service.findArticleById(1)
+            verify {
+                articleRepository.findArticleById(any())
+                userInfoRepository.findUserById(any())
+            }
+
+            assertThat(singleArticleProfileEntity.articleId).isEqualTo(1)
+
+        }
+    }
 
 
 }
