@@ -24,7 +24,7 @@ class UserInfoService(
         return repository.save(command.toEntity())
     }
 
-    fun findUserById(userId: String): UserInfoEntity?{
+    fun findUserById(userId: String): UserInfoEntity? {
         return repository.findUserById(userId)
     }
 

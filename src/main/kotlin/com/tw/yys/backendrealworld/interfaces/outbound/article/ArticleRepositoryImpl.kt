@@ -7,5 +7,8 @@ import org.springframework.stereotype.Component
 class ArticleRepositoryImpl(
     private val dao: ArticleDao
 ): ArticleRepository {
-
+    override fun save(entity: ArticleEntity): ArticleEntity {
+        return dao.save(entity.toPo()).toDomain()
+    }
 }
+
