@@ -3,6 +3,7 @@ package com.tw.yys.backendrealworld.interfaces.inbound
 import com.tw.yys.backendrealworld.application.article.ArticleModifyUseCase
 import com.tw.yys.backendrealworld.application.article.ArticleQueryUseCase
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewArticleRequest
+import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateArticleRequest
 import com.tw.yys.backendrealworld.interfaces.outbound.article.response.ArticleResponse
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
@@ -26,13 +27,13 @@ class ArticleController(
         return articleModifyUseCase.createNewArticle(userId, request).toResponse()
     }
 
-//    @PostMapping("/article/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    fun updateArticle(
-//        @PathVariable id: String,
-//        @RequestBody request: CreateNewArticleRequest
-//    ): ArticleResponse {
-//        return articleModifyUseCase.createNewArticle(userId, request).toResponse()
-//    }
+    @PostMapping("/articles/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateArticle(
+        @PathVariable id: Long,
+        @RequestBody request: UpdateArticleRequest
+    ): ArticleResponse {
+        return articleModifyUseCase.updateArticle(id, request).toResponse()
+    }
 
 }

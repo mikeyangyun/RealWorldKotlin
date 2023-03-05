@@ -10,5 +10,9 @@ class ArticleRepositoryImpl(
     override fun save(entity: ArticleEntity): ArticleEntity {
         return dao.save(entity.toPo()).toDomain()
     }
+
+    override fun findArticleById(articleId: Long): ArticleEntity? {
+        return dao.findTopById(articleId)?.toDomain()
+    }
 }
 

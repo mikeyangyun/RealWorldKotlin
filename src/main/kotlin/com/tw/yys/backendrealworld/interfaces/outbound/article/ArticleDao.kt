@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ArticleDao: JpaRepository<ArticlePo, Int> {
-
+    fun findTopById(id: Long): ArticlePo?
 }
