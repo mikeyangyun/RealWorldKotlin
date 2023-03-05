@@ -41,7 +41,7 @@ class ArticleController(
 
     @GetMapping("/articles/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateArticle(
+    fun findArticleById(
         @PathVariable id: Long,
     ): ArticleResponse {
         return articleQueryUseCase.findArticleById(id).toResponse()
