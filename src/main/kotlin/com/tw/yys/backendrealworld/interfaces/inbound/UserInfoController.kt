@@ -3,6 +3,7 @@ package com.tw.yys.backendrealworld.interfaces.inbound
 import com.tw.yys.backendrealworld.application.userinfo.UserInfoModifyUseCase
 import com.tw.yys.backendrealworld.application.userinfo.UserInfoQueryUseCase
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewAccountRequest
+import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateUserInfoRequest
 import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.response.UserInfoResponse
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -29,6 +30,15 @@ class UserInfoController(
     @ResponseStatus(HttpStatus.OK)
     fun findUserById(@RequestParam userId: String): UserInfoResponse {
         return userInfoQueryUseCase.findUserById(userId).toResponse()
+    }
+
+    @PostMapping("/user")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateUserInfo(
+        @RequestParam userId: String,
+        @RequestBody request: UpdateUserInfoRequest
+    ): UserInfoResponse {
+        return userInfoModifyUseCase.updateUserInfo(userId, request).toResponse()
     }
 
 

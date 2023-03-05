@@ -21,7 +21,7 @@ class UserInfoModifyUseCaseTest {
 
     @Nested
     inner class WhenCreateNewAccount{
-        private val request = UserInfoFixture.Default.request
+        private val request = UserInfoFixture.Default.createNewAccountRequest
         private val entity = UserInfoFixture.Default.userInfoEntity
         private val responseDto = UserInfoFixture.Default.userInfoResponseDto
 
@@ -32,6 +32,23 @@ class UserInfoModifyUseCaseTest {
             val createNewAccount = modifyUseCase.createNewAccount(request)
 
             assertEquals(responseDto, createNewAccount)
+        }
+    }
+
+    @Nested
+    inner class WhenUpdateUserInfo{
+        private val id = "fake id for test"
+        private val request = UserInfoFixture.Default.updateUserInfoRequest
+        private val entity = UserInfoFixture.Default.updateUserInfoEntity
+        private val responseDto = UserInfoFixture.Default.updateUserInfoResponseDto
+
+        @Test
+        fun `should a new account info given successfully created`(){
+            every { userInfoService.updateUserInfo(id, request) } returns entity
+
+            val updatedUserInfo = modifyUseCase.updateUserInfo(id, request)
+
+            assertEquals(responseDto, updatedUserInfo)
         }
     }
 }

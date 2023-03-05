@@ -43,7 +43,7 @@ class UserInfoControllerTest {
 
     @Nested
     inner class WhenCreateNewAccount{
-        private val request = UserInfoFixture.Default.request
+        private val request = UserInfoFixture.Default.createNewAccountRequest
         private val responseDto = UserInfoFixture.Default.userInfoResponseDto
         @Test
         fun `should create new account given new sign up request`(){
@@ -63,11 +63,32 @@ class UserInfoControllerTest {
     inner class WhenFindUserById{
         private val responseDto = UserInfoFixture.Default.userInfoResponseDto
         @Test
-        fun `should throw UserNotFoundException when no user found`(){
+        fun `should return found user when user found successfully`(){
             every { queryUseCase.findUserById(accountId) } returns responseDto
 
             mockMvc.get("/user") {
                 param("userId", accountId)
+            }.andExpect {
+                status { isOk() }
+                content { objectMapper.writeValueAsString(responseDto.toResponse()) }
+            }
+        }
+    }
+
+    @Nested
+    inner class WhenUpdateUserInfo{
+        private val id = "fake id for test"
+        private val request = UserInfoFixture.Default.updateUserInfoRequest
+        private val responseDto = UserInfoFixture.Default.updateUserInfoResponseDto
+
+        @Test
+        fun `should return updated user when user info update successfully`(){
+            every { modifyUseCase.updateUserInfo(id, request) } returns responseDto
+
+            mockMvc.post("/user") {
+                param("userId", id)
+                content = objectMapper.writeValueAsString(request)
+                contentType = MediaType.APPLICATION_JSON
             }.andExpect {
                 status { isOk() }
                 content { objectMapper.writeValueAsString(responseDto.toResponse()) }

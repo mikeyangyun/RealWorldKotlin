@@ -3,6 +3,7 @@ package com.tw.yys.backendrealworld.domain
 import com.tw.yys.backendrealworld.domain.common.errors.ExistingEmailException
 import com.tw.yys.backendrealworld.domain.common.errors.ExistingUserAccountInfoException
 import com.tw.yys.backendrealworld.domain.common.errors.ExistingUserNameException
+import com.tw.yys.backendrealworld.domain.common.errors.UserNotFoundException
 import com.tw.yys.backendrealworld.fixture.UserInfoFixture
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -24,7 +25,7 @@ class UserInfoServiceTest{
 
     @Nested
     inner class WhenCreateNewAccount{
-        private val request = UserInfoFixture.Default.request
+        private val request = UserInfoFixture.Default.createNewAccountRequest
         private val entity = UserInfoFixture.Default.userInfoEntity
         @Test
         fun `should throw ExistingUserNameException given username already taken and email not taken`() {
@@ -90,9 +91,43 @@ class UserInfoServiceTest{
         fun `should return found userInfo given user exist`(){
             every { repository.findUserById(userId) } returns entity
 
-            val createNewAccount = service.findUserById(userId)
+            val foundUser = service.findUserById(userId)?.toDto()
 
-            Assertions.assertEquals(responseDto, createNewAccount)
+            Assertions.assertEquals(responseDto, foundUser)
         }
+    }
+
+    @Nested
+    inner class WhenUpdateUserInfo {
+        private val id = "fake id for test"
+        private val command = UserInfoFixture.Default.updateUserInfoRequest
+        private val entity = UserInfoFixture.Default.updateUserInfoEntity
+
+        @Test
+        fun `should throw UserNotFoundException when user not exist`(){
+            every { repository.findUserById(id) } returns null
+            every { repository.save(any()) } returns entity
+
+            assertThrows<UserNotFoundException> {
+                service.updateUserInfo(id, command)
+            }
+            verify(inverse = true) {
+                repository.save(any())
+            }
+        }
+
+        @Test
+        fun `should return updated userInfo when user exist`(){
+            every { repository.findUserById(id) } returns entity
+            every { repository.save(any()) } returns entity
+
+            service.updateUserInfo(id, command)
+
+            verify {
+                repository.save(entity)
+            }
+        }
+
+
     }
 }

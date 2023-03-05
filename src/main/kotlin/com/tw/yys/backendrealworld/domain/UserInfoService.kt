@@ -3,7 +3,9 @@ package com.tw.yys.backendrealworld.domain
 import com.tw.yys.backendrealworld.domain.common.errors.ExistingEmailException
 import com.tw.yys.backendrealworld.domain.common.errors.ExistingUserAccountInfoException
 import com.tw.yys.backendrealworld.domain.common.errors.ExistingUserNameException
+import com.tw.yys.backendrealworld.domain.common.errors.UserNotFoundException
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewAccountRequest
+import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateUserInfoRequest
 import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoEntity
 import org.springframework.stereotype.Service
 
@@ -25,12 +27,20 @@ class UserInfoService(
     fun findUserById(userId: String): UserInfoEntity?{
         return repository.findUserById(userId)
     }
+
+    fun updateUserInfo(userId: String, command: UpdateUserInfoRequest): UserInfoEntity {
+        repository.findUserById(userId) ?: throw UserNotFoundException()
+
+        val entity = command.toEntity(userId)
+
+        return repository.save(entity)
+
+    }
 }
 
 interface UserInfoRepository {
     fun save(entity: UserInfoEntity): UserInfoEntity
     fun findByUserName(userName: String): UserInfoEntity?
     fun findByEmail(email: String): UserInfoEntity?
-
     fun findUserById(userId: String): UserInfoEntity?
 }
