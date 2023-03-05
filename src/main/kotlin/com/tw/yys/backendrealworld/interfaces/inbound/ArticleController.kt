@@ -3,6 +3,7 @@ package com.tw.yys.backendrealworld.interfaces.inbound
 import com.tw.yys.backendrealworld.application.article.ArticleModifyUseCase
 import com.tw.yys.backendrealworld.application.article.ArticleQueryUseCase
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewArticleRequest
+import com.tw.yys.backendrealworld.interfaces.inbound.dto.MultipleArticlesResponseDto
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateArticleRequest
 import com.tw.yys.backendrealworld.interfaces.outbound.article.response.ArticleResponse
 import org.springframework.http.HttpStatus
@@ -52,6 +53,17 @@ class ArticleController(
         @PathVariable id: Long,
     ) {
         articleModifyUseCase.deleteArticleById(id)
+    }
+
+    @GetMapping("articles")
+    @ResponseStatus(HttpStatus.OK)
+    fun retrieveArticles(
+        @RequestParam(defaultValue = "",required = false) tag: String,
+        @RequestParam(defaultValue = "",required = false) author: String,
+        @RequestParam(defaultValue = "20", required = false) limit: Int,
+        @RequestParam(defaultValue = "0", required = false) offset: Int
+    ): MultipleArticlesResponseDto {
+        return articleQueryUseCase.retrieveArticles(tag, author, limit, offset)
     }
 
 
