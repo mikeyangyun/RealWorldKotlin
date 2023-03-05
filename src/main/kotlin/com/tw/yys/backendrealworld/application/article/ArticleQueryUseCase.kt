@@ -1,6 +1,7 @@
 package com.tw.yys.backendrealworld.application.article
 
 import com.tw.yys.backendrealworld.domain.ArticleService
+import com.tw.yys.backendrealworld.interfaces.inbound.dto.MultipleArticlesResponseDto
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.SingleArticleProfileResponseDto
 import org.springframework.stereotype.Service
 
@@ -10,5 +11,16 @@ class ArticleQueryUseCase(
 ) {
     fun findArticleById(articleId: Long): SingleArticleProfileResponseDto {
         return service.findArticleById(articleId).toDto()
+    }
+
+    fun retrieveArticles(tag: String, author: String, limit: Int, offset: Int): MultipleArticlesResponseDto {
+        val articleProfileEntities = service.retrieveArticles(tag, author, limit, offset)
+
+        val articleList = articleProfileEntities.map { it.toDto() }
+
+        return MultipleArticlesResponseDto(
+            articleList,
+            articleList.count()
+        )
     }
 }

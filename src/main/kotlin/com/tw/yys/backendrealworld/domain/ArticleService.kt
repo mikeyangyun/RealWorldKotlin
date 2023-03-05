@@ -76,11 +76,61 @@ class ArticleService(
     fun deleteArticleById(articleId: Long) {
         articleRepository.deleteArticleById(articleId)
     }
+
+    fun retrieveArticles(tag: String, authorName: String, limit: Int, offset: Int): List<SingleArticleProfileEntity> {
+        if (tag.isEmpty() && authorName.isEmpty()) {
+            val articleEntityList = articleRepository.findAllArticlesLimitIsAndOffsetIs(limit, offset)
+            return articleEntityList.map {
+                findArticleById(it.articleId)
+            }
+        }
+        if (tag.isNotEmpty() && authorName.isEmpty()) {
+            val articleEntityList = articleRepository.findArticleByTagAndLimitIsAndOffsetIs(tag, limit, offset)
+            return articleEntityList.map {
+                findArticleById(it.articleId)
+            }
+        }
+        if (tag.isEmpty() && authorName.isNotEmpty()) {
+            val user = userInfoRepository.findByUserName(authorName) ?: return emptyList()
+
+            val articleEntityList = articleRepository.findArticleByAuthorIdAndLimitIsAndOffsetIs(user.id, limit, offset)
+
+            return articleEntityList.map {
+                findArticleById(it.articleId)
+            }
+        }
+        val user = userInfoRepository.findByUserName(authorName) ?: return emptyList()
+
+        val articleEntityList = articleRepository.findArticleByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, user.id, limit, offset)
+        return articleEntityList.map {
+            findArticleById(it.articleId)
+        }
+
+    }
 }
 
 interface ArticleRepository{
     fun save(entity: ArticleEntity): ArticleEntity
     fun findArticleById(articleId: Long): ArticleEntity?
     fun deleteArticleById(articleId: Long)
-
+    fun findAllArticlesLimitIsAndOffsetIs(
+        limit: Int,
+        offset: Int
+    ): List<ArticleEntity>
+    fun findArticleByTagAndLimitIsAndOffsetIs(
+        tag: String,
+        limit: Int,
+        offset: Int
+    ): List<ArticleEntity>
+    fun findArticleByAuthorIdAndLimitIsAndOffsetIs(
+        authorId: String,
+        limit: Int,
+        offset: Int
+    ): List<ArticleEntity>
+    fun findArticleByTagAndAuthorIdAndLimitIsAndOffsetIs(
+        tag: String,
+        authorId: String,
+        limit: Int,
+        offset: Int
+    ): List<ArticleEntity>
 }

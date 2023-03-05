@@ -18,5 +18,37 @@ class ArticleRepositoryImpl(
     override fun deleteArticleById(articleId: Long) {
         dao.deleteArticlePoById(articleId)
     }
+
+    override fun findAllArticlesLimitIsAndOffsetIs(
+        limit: Int,
+        offset: Int
+    ): List<ArticleEntity> {
+        return dao.findAllArticlesLimitIsAndOffsetIs(limit, offset).map { it.toDomain() }
+    }
+
+    override fun findArticleByAuthorIdAndLimitIsAndOffsetIs(
+        authorId: String,
+        limit: Int,
+        offset: Int
+    ): List<ArticleEntity> {
+        return dao.findArticleByAuthorIdAndLimitIsAndOffsetIs(authorId, limit, offset).map { it.toDomain() }
+    }
+
+    override fun findArticleByTagAndAuthorIdAndLimitIsAndOffsetIs(
+        tag: String,
+        authorId: String,
+        limit: Int,
+        offset: Int
+    ): List<ArticleEntity> {
+        return dao.findArticleByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, limit, offset).map { it.toDomain() }
+    }
+
+    override fun findArticleByTagAndLimitIsAndOffsetIs(
+        tag: String,
+        limit: Int,
+        offset: Int
+    ): List<ArticleEntity> {
+        return dao.findArticleByTagAndLimitIsAndOffsetIs(tag, limit, offset).map { it.toDomain() }
+    }
 }
 
