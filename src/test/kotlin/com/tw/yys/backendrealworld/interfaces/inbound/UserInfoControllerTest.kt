@@ -2,7 +2,8 @@ package com.tw.yys.backendrealworld.interfaces.inbound
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
-import com.tw.yys.backendrealworld.application.UserInfoModifyUseCase
+import com.tw.yys.backendrealworld.application.userinfo.UserInfoModifyUseCase
+import com.tw.yys.backendrealworld.application.userinfo.UserInfoQueryUseCase
 import com.tw.yys.backendrealworld.fixture.UserInfoFixture
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 
 @WebMvcTest(UserInfoController::class)
@@ -28,6 +30,9 @@ class UserInfoControllerTest {
 
     @MockkBean
     private lateinit var modifyUseCase: UserInfoModifyUseCase
+
+    @MockkBean
+    private lateinit var queryUseCase: UserInfoQueryUseCase
 
     private var accountId = "mock id for test"
 
@@ -50,6 +55,22 @@ class UserInfoControllerTest {
             }.andExpect {
                 status { isOk() }
                 content { responseDto.toResponse() }
+            }
+        }
+    }
+
+    @Nested
+    inner class WhenFindUserById{
+        private val responseDto = UserInfoFixture.Default.userInfoResponseDto
+        @Test
+        fun `should throw UserNotFoundException when no user found`(){
+            every { queryUseCase.findUserById(accountId) } returns responseDto
+
+            mockMvc.get("/user") {
+                param("userId", accountId)
+            }.andExpect {
+                status { isOk() }
+                content { objectMapper.writeValueAsString(responseDto.toResponse()) }
             }
         }
     }
