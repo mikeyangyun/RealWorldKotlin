@@ -4,11 +4,9 @@ import com.tw.yys.backendrealworld.domain.common.errors.ArticleNotFoundException
 import com.tw.yys.backendrealworld.domain.common.errors.UserNotFoundException
 import com.tw.yys.backendrealworld.fixture.ArticleFixture
 import com.tw.yys.backendrealworld.fixture.UserInfoFixture
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -160,5 +158,18 @@ class ArticleServiceTest{
         }
     }
 
+    @Nested
+    inner class WhenDeleteArticleById {
+        @Test
+        fun `should throw ArticleNotFoundException given article not found by articleId`() {
+            every { articleRepository.deleteArticleById(any()) } just runs
+
+            service.deleteArticleById(1)
+
+            verify{
+                articleRepository.deleteArticleById(1)
+            }
+        }
+    }
 
 }
