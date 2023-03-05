@@ -9,4 +9,6 @@ interface UserInfoDao : JpaRepository<UserInfoPo, String> {
 
     fun findTopByEmail(email: String): UserInfoPo?
 
+    fun findTopById(userId: String): UserInfoPo?
+
 }

@@ -1,4 +1,4 @@
-package com.tw.yys.backendrealworld.application
+package com.tw.yys.backendrealworld.application.userinfo
 
 import com.tw.yys.backendrealworld.domain.UserInfoService
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewAccountRequest

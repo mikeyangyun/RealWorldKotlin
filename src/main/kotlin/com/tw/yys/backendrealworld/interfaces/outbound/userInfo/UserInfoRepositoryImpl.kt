@@ -17,4 +17,8 @@ class UserInfoRepositoryImpl(
     override fun findByEmail(email: String): UserInfoEntity? {
         return dao.findTopByEmail(email)?.toDomain()
     }
+
+    override fun findUserById(userId: String): UserInfoEntity? {
+        return dao.findTopById(userId)?.toDomain()
+    }
 }
