@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
-    id("org.springframework.boot") version "2.7.0"
+    id("org.springframework.boot") version "2.7.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
@@ -40,7 +40,7 @@ dependencies {
     use postgres
      */
     runtimeOnly("org.postgresql:postgresql")
-
+    runtimeOnly("com.h2database:h2")
     annotationProcessor("org.projectlombok:lombok")
     // test
     implementation("com.nimbusds:nimbus-jose-jwt:9.22")
@@ -48,6 +48,11 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     testImplementation("com.ninja-squad:springmockk:3.1.1")
     testImplementation("io.mockk:mockk:1.12.4")
+}
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.Embeddable")
+    annotation("javax.persistence.MappedSuperclass")
 }
 
 tasks.withType<KotlinCompile> {
