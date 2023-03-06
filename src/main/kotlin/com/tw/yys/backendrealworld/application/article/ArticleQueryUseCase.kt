@@ -14,7 +14,11 @@ class ArticleQueryUseCase(
     }
 
     fun retrieveArticles(tag: String, author: String, limit: Int, offset: Int): MultipleArticlesResponseDto {
-        val articleProfileEntities = service.retrieveArticles(tag, author, limit, offset)
+        val tagValue = when (tag.isNotEmpty()) {
+            true -> "%$tag%"
+            else -> tag
+        }
+        val articleProfileEntities = service.retrieveArticles(tagValue, author, limit, offset)
 
         val articleList = articleProfileEntities.map { it.toDto() }
 

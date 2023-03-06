@@ -31,7 +31,7 @@ interface ArticleDao: JpaRepository<ArticlePo, Int> {
 
     @Query(
         """
-            SELECT * FROM articles WHERE  tag LIKE ?1 AND author_id = ?2 LIMIT ?3 OFFSET ?4
+            SELECT * FROM articles WHERE  tags is not null and tags LIKE ?1 AND author_id = ?2 LIMIT ?3 OFFSET ?4
         """,
         nativeQuery = true
     )
@@ -44,7 +44,7 @@ interface ArticleDao: JpaRepository<ArticlePo, Int> {
 
     @Query(
         """
-            SELECT * FROM articles WHERE  tag LIKE ?1 LIMIT ?2 OFFSET ?3
+            SELECT * FROM articles WHERE  tags is not null and tags LIKE ?1 LIMIT ?2 OFFSET ?3
         """,
         nativeQuery = true
     )
