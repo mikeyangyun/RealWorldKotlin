@@ -1,5 +1,6 @@
 package com.tw.yys.backendrealworld.interfaces.outbound.userInfo
 
+import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateUserInfoRequest
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UserInfoResponseDto
 
 data class UserInfoModel(
@@ -24,6 +25,15 @@ data class UserInfoModel(
         email = email,
         bio = bio,
         image = image
+    )
+
+    fun update(command: UpdateUserInfoRequest) = UserInfoModel(
+        id = id,
+        username = username,
+        email = command.email ?: email,
+        password = password,
+        bio = command.bio ?: bio,
+        image = command.image ?: image
     )
 }
 

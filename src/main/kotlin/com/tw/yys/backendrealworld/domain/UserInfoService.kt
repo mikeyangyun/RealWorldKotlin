@@ -29,9 +29,9 @@ class UserInfoService(
     }
 
     fun updateUserInfo(userId: String, command: UpdateUserInfoRequest): UserInfoModel {
-        repository.findUserById(userId) ?: throw UserNotFoundException()
+        val existing = repository.findUserById(userId) ?: throw UserNotFoundException()
 
-        val entity = command.toEntity(userId)
+        val entity = existing.update(command)
 
         return repository.save(entity)
 

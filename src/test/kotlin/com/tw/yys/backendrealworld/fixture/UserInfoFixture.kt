@@ -27,9 +27,7 @@ object UserInfoFixture {
             image = null
         )
         val updateUserInfoRequest = UpdateUserInfoRequest(
-            username = "jack",
             email = "jack@gmail.com",
-            password = "password",
             bio ="https://realWorld.bios",
             image = "image for user"
         )
