@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ArticleModifyUseCase(
-    private val service: ArticleService
+    private val service: ArticleService,
 ) {
     fun createNewArticle(userId: String, command: CreateNewArticleRequest): SingleArticleProfileResponseDto {
         return service.createNewArticle(userId, command).toDto()
@@ -18,8 +18,8 @@ class ArticleModifyUseCase(
         return service.updateArticle(articleId, request).toDto()
     }
 
-    fun deleteArticleById(articleId: Long) {
-        service.deleteArticleById(articleId)
+    fun deleteArticleById(articleId: Long, userId: String) {
+        service.deleteArticleById(articleId, userId)
     }
 
 }

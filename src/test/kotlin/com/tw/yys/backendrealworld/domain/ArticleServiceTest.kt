@@ -14,13 +14,15 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class ArticleServiceTest{
+class ArticleServiceTest {
     private val articleRepository = mockk<ArticleRepository>()
     private val userInfoRepository = mockk<UserInfoRepository>()
+
     @InjectMockKs
-    private lateinit var service : ArticleService
+    private lateinit var service: ArticleService
 
     val authorId = "fake id for test"
+
     @Nested
     inner class WhenCreateNewArticle {
         private val request = ArticleFixture.Default.createNewArticleRequest
@@ -160,16 +162,65 @@ class ArticleServiceTest{
 
     @Nested
     inner class WhenDeleteArticleById {
+        private val userId = "fake id"
+        private val user = UserInfoFixture.Default.userInfoModel
+        private val article = ArticleFixture.Default.articleModel
+
         @Test
-        fun `should throw ArticleNotFoundException given article not found by articleId`() {
+        fun `should throw UserNotFoundException given user not found by id`() {
+            every { userInfoRepository.findUserById(userId) } returns null
+            every { articleRepository.findArticleById(any()) } returns null
             every { articleRepository.deleteArticleById(any()) } just runs
 
-            service.deleteArticleById(1)
+            assertThrows<UserNotFoundException> {
+                service.deleteArticleById(1, userId)
+            }
 
-            verify{
+            verify {
+                userInfoRepository.findUserById(userId)
+            }
+            verify(inverse = true) {
+                articleRepository.findArticleById(1)
                 articleRepository.deleteArticleById(1)
             }
         }
+
+        @Test
+        fun `should throw ArticleNotFoundException given article not found by articleId`() {
+            every { userInfoRepository.findUserById(userId) } returns user
+            every { articleRepository.findArticleById(any()) } returns null
+            every { articleRepository.deleteArticleById(any()) } just runs
+
+
+            assertThrows<ArticleNotFoundException> {
+                service.deleteArticleById(1, userId)
+
+            }
+            verify {
+                userInfoRepository.findUserById(userId)
+                articleRepository.findArticleById(1)
+            }
+            verify(inverse = true) {
+                articleRepository.deleteArticleById(1)
+            }
+        }
+
+        @Test
+        fun `should delete article successfully given user is the author`() {
+            every { userInfoRepository.findUserById(userId) } returns user
+            every { articleRepository.findArticleById(any()) } returns article
+            every { articleRepository.deleteArticleById(any()) } just runs
+
+            service.deleteArticleById(1, userId)
+
+            verify {
+                userInfoRepository.findUserById(userId)
+                articleRepository.findArticleById(1)
+                articleRepository.deleteArticleById(1)
+            }
+        }
+
+
     }
 
     @Nested
@@ -184,7 +235,7 @@ class ArticleServiceTest{
         private val articleProfileModel = ArticleFixture.Default.articleProfileModel
 
         @Test
-        fun `should return empty list given tag and authorName not required and no articles exist`()  {
+        fun `should return empty list given tag and authorName not required and no articles exist`() {
             every {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
             } returns emptyList()

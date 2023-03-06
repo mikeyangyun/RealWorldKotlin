@@ -50,12 +50,12 @@ class ArticleModifyUseCaseTest {
     inner class WhenDeleteArticle{
         @Test
         fun `should delete article successfully given article exist`(){
-            every { articleService.deleteArticleById(any()) } just runs
+            every { articleService.deleteArticleById(any(), any()) } just runs
 
-            modifyUseCase.deleteArticleById(1)
+            modifyUseCase.deleteArticleById(1, userId)
 
             verify {
-                articleService.deleteArticleById(1)
+                articleService.deleteArticleById(1, userId)
             }
         }
     }

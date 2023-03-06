@@ -1,6 +1,7 @@
 package com.tw.yys.backendrealworld.domain
 
 import com.tw.yys.backendrealworld.domain.common.errors.ArticleNotFoundException
+import com.tw.yys.backendrealworld.domain.common.errors.NotAuthorizedException
 import com.tw.yys.backendrealworld.domain.common.errors.UserNotFoundException
 import com.tw.yys.backendrealworld.domain.common.model.UserProfile
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewArticleRequest
@@ -9,8 +10,10 @@ import com.tw.yys.backendrealworld.interfaces.outbound.article.ArticleModel
 import com.tw.yys.backendrealworld.interfaces.outbound.article.response.ArticleProfileModel
 import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoModel
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
 @Service
+@Transactional
 class ArticleService(
     private val articleRepository: ArticleRepository,
     private val userInfoRepository: UserInfoRepository
@@ -56,12 +59,11 @@ class ArticleService(
     }
 
     private fun getUserProfile(existingUser: UserInfoModel): UserProfile {
-        val author = UserProfile(
+        return UserProfile(
             username = existingUser.username,
             bio = existingUser.bio,
             image = existingUser.image
         )
-        return author
     }
 
     fun findArticleById(articleId: Long): ArticleProfileModel {
@@ -73,7 +75,11 @@ class ArticleService(
         return singleArticleProfileEntity(author,foundArticle)
     }
 
-    fun deleteArticleById(articleId: Long) {
+    fun deleteArticleById(articleId: Long, userId: String) {
+        val userInfoModel = userInfoRepository.findUserById(userId) ?: throw UserNotFoundException()
+        val articleModel = articleRepository.findArticleById(articleId) ?: throw ArticleNotFoundException()
+        if (articleModel.authorId != userInfoModel.id)
+            throw NotAuthorizedException("User ${userInfoModel.username} not authorized to update article ${articleModel.title}")
         articleRepository.deleteArticleById(articleId)
     }
 
