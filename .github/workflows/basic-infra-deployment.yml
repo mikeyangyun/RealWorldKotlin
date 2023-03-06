@@ -56,6 +56,9 @@ jobs:
       - name: Push image to ECR
         run: docker push 316682785549.dkr.ecr.us-east-1.amazonaws.com/demo-repository:myapp
 
+      - name: Copy Lock File to Local
+        run: cd ./deployment/basic && aws s3 cp s3://yys-bucket/keys.tfvars .
+
       - name: "Format terraform"
         run: cd ./deployment/basic && terraform fmt
 
@@ -66,7 +69,7 @@ jobs:
         run: cd ./deployment/basic && terraform validate
 
       - name: "Run terraform apply"
-        run: cd ./deployment/basic && terraform apply -auto-approve
+        run: cd ./deployment/basic && terraform apply -var-file keys.tfvars -auto-approve
 
       - name: Copy Lock File to S3 Bucket
         run: cd ./deployment/basic && mkdir backup && cp terraform.tfstate terraform.tfstate.backup backup && aws s3 mv backup s3://yys-bucket/backup --recursive
