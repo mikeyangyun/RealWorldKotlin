@@ -47,7 +47,7 @@ class UserInfoControllerTest {
         fun `should create new account given new sign up request`(){
             every { modifyUseCase.createNewAccount(request) } returns responseDto
 
-            mockMvc.post("/users") {
+            mockMvc.post("/api/users") {
                 content = objectMapper.writeValueAsString(request)
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
@@ -64,7 +64,7 @@ class UserInfoControllerTest {
         fun `should return found user when user found successfully`(){
             every { queryUseCase.findUserById(accountId) } returns responseDto
 
-            mockMvc.get("/user") {
+            mockMvc.get("/api/user") {
                 param("userId", accountId)
             }.andExpect {
                 status { isOk() }
@@ -83,7 +83,7 @@ class UserInfoControllerTest {
         fun `should return updated user when user info update successfully`(){
             every { modifyUseCase.updateUserInfo(id, request) } returns responseDto
 
-            mockMvc.post("/user") {
+            mockMvc.post("/api/user") {
                 param("userId", id)
                 content = objectMapper.writeValueAsString(request)
                 contentType = MediaType.APPLICATION_JSON

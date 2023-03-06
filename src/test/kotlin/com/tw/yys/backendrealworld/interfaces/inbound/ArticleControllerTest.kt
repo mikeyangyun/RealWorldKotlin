@@ -49,7 +49,7 @@ class ArticleControllerTest {
         fun `should create new article given successfully called`(){
             every { modifyUseCase.createNewArticle(userId, request) } returns responseDto
 
-            mockMvc.post("/articles") {
+            mockMvc.post("/api/articles") {
                 param("userId", userId)
                 content = objectMapper.writeValueAsString(request)
                 contentType = MediaType.APPLICATION_JSON
@@ -68,7 +68,7 @@ class ArticleControllerTest {
         fun `should update article successfully given article exist`(){
             every { modifyUseCase.updateArticle(any(), request) } returns responseDto
 
-            mockMvc.post("/articles/1") {
+            mockMvc.post("/api/articles/1") {
                 content = objectMapper.writeValueAsString(request)
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
@@ -85,7 +85,7 @@ class ArticleControllerTest {
         fun `should get status is OK given article exist`(){
             every { queryUseCase.findArticleById(any()) } returns responseDto
 
-            mockMvc.get("/articles/1") {
+            mockMvc.get("/api/articles/1") {
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
                 status { isOk() }
@@ -98,9 +98,10 @@ class ArticleControllerTest {
     inner class WhenDeleteArticle{
         @Test
         fun `should delete article successfully given article exist`(){
-            every { modifyUseCase.deleteArticleById(any()) } just runs
+            every { modifyUseCase.deleteArticleById(any(), any()) } just runs
 
-            mockMvc.delete("/articles/1") {
+            mockMvc.delete("/api/articles/1") {
+                param("userId", userId)
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
                 status { isOk() }
@@ -119,7 +120,7 @@ class ArticleControllerTest {
         fun `should return multiple articles successfully given article exist`(){
             every { queryUseCase.retrieveArticles(any(),any(), any(), any()) } returns responseDto
 
-            mockMvc.get("/articles") {
+            mockMvc.get("/api/articles") {
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
                 status { isOk() }

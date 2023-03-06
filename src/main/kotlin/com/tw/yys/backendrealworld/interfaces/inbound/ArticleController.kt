@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/articles")
+@RequestMapping("/api/articles")
 class ArticleController(
     private val articleQueryUseCase: ArticleQueryUseCase,
     private val articleModifyUseCase: ArticleModifyUseCase
@@ -53,9 +53,10 @@ class ArticleController(
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun deleteArticle(
-        @PathVariable id: Long,
+        @RequestParam userId: String,
+        @PathVariable id: Long
     ) {
-        articleModifyUseCase.deleteArticleById(id)
+        articleModifyUseCase.deleteArticleById(id, userId)
     }
 
     @GetMapping
