@@ -2,7 +2,7 @@ package com.tw.yys.backendrealworld.interfaces.outbound.userInfo
 
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UserInfoResponseDto
 
-data class UserInfoEntity(
+data class UserInfoModel(
     val id: String,
     val username: String,
     val email: String,
@@ -22,7 +22,6 @@ data class UserInfoEntity(
     fun toDto(): UserInfoResponseDto = UserInfoResponseDto(
         username = username,
         email = email,
-        password = password,
         bio = bio,
         image = image
     )

@@ -1,6 +1,6 @@
 package com.tw.yys.backendrealworld.interfaces.inbound.dto
 
-import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoEntity
+import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoModel
 
 data class UpdateUserInfoRequest(
     val username: String,
@@ -9,7 +9,7 @@ data class UpdateUserInfoRequest(
     val bio: String?,
     val image: String?
 ) {
-    fun toEntity(userId: String) = UserInfoEntity(
+    fun toEntity(userId: String) = UserInfoModel(
         id = userId,
         username = username,
         email = email,

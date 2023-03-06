@@ -24,13 +24,13 @@ class ArticleServiceTest{
     @Nested
     inner class WhenCreateNewArticle {
         private val request = ArticleFixture.Default.createNewArticleRequest
-        private val articleEntity = ArticleFixture.Default.articleEntity
-        private val userInfoEntity = UserInfoFixture.Default.userInfoEntity
+        private val articleModel = ArticleFixture.Default.articleModel
+        private val userInfoModel = UserInfoFixture.Default.userInfoModel
 
         @Test
         fun `should throw UserNotFoundException given user not found by userId`() {
             every { userInfoRepository.findUserById(any()) } returns null
-            every { articleRepository.save(articleEntity) } returns articleEntity
+            every { articleRepository.save(articleModel) } returns articleModel
 
             assertThrows<UserNotFoundException> {
                 service.createNewArticle(authorId, request)
@@ -42,27 +42,27 @@ class ArticleServiceTest{
 
         @Test
         fun `should return created article profile given create article successfully`() {
-            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
-            every { articleRepository.save(any()) } returns articleEntity
+            every { userInfoRepository.findUserById(any()) } returns userInfoModel
+            every { articleRepository.save(any()) } returns articleModel
 
             val singleArticleProfileEntity = service.createNewArticle(authorId, request)
             verify {
                 articleRepository.save(any())
             }
-            assertThat(singleArticleProfileEntity.author.username).isEqualTo(userInfoEntity.username)
-            assertThat(singleArticleProfileEntity.author.image).isEqualTo(userInfoEntity.image)
-            assertThat(singleArticleProfileEntity.author.bio).isEqualTo(userInfoEntity.bio)
+            assertThat(singleArticleProfileEntity.author.username).isEqualTo(userInfoModel.username)
+            assertThat(singleArticleProfileEntity.author.image).isEqualTo(userInfoModel.image)
+            assertThat(singleArticleProfileEntity.author.bio).isEqualTo(userInfoModel.bio)
 
-            assertThat(singleArticleProfileEntity.articleId).isEqualTo(articleEntity.articleId)
-            assertThat(singleArticleProfileEntity.title).isEqualTo(articleEntity.title)
+            assertThat(singleArticleProfileEntity.articleId).isEqualTo(articleModel.articleId)
+            assertThat(singleArticleProfileEntity.title).isEqualTo(articleModel.title)
         }
     }
 
     @Nested
     inner class WhenUpdateArticle {
         private val request = ArticleFixture.Default.updateArticleRequest
-        private val articleEntity = ArticleFixture.Default.articleEntity
-        private val userInfoEntity = UserInfoFixture.Default.userInfoEntity
+        private val articleEntity = ArticleFixture.Default.articleModel
+        private val userInfoEntity = UserInfoFixture.Default.userInfoModel
 
         @Test
         fun `should throw ArticleNotFoundException given article not found by articleId`() {
@@ -113,8 +113,8 @@ class ArticleServiceTest{
 
     @Nested
     inner class WhenFindArticleById {
-        private val articleEntity = ArticleFixture.Default.articleEntity
-        private val userInfoEntity = UserInfoFixture.Default.userInfoEntity
+        private val articleModel = ArticleFixture.Default.articleModel
+        private val userInfoModel = UserInfoFixture.Default.userInfoModel
 
         @Test
         fun `should throw ArticleNotFoundException given article not found by articleId`() {
@@ -131,7 +131,7 @@ class ArticleServiceTest{
 
         @Test
         fun `should throw UserNotFoundException given user not found by userId`() {
-            every { articleRepository.findArticleById(any()) } returns articleEntity
+            every { articleRepository.findArticleById(any()) } returns articleModel
             every { userInfoRepository.findUserById(any()) } returns null
 
             assertThrows<UserNotFoundException> {
@@ -144,8 +144,8 @@ class ArticleServiceTest{
 
         @Test
         fun `should return found article profile given article exist`() {
-            every { articleRepository.findArticleById(any()) } returns articleEntity
-            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
+            every { articleRepository.findArticleById(any()) } returns articleModel
+            every { userInfoRepository.findUserById(any()) } returns userInfoModel
 
             val singleArticleProfileEntity = service.findArticleById(1)
             verify {
@@ -179,26 +179,17 @@ class ArticleServiceTest{
         private val limit = 20
         private val offset = 1
 
-        private val userInfoEntity = UserInfoFixture.Default.userInfoEntity
-        private val articleEntity = ArticleFixture.Default.articleEntity
-        private val singleArticleProfileEntity = ArticleFixture.Default.singleArticleProfileEntity
+        private val userInfoModel = UserInfoFixture.Default.userInfoModel
+        private val articleModel = ArticleFixture.Default.articleModel
+        private val articleProfileModel = ArticleFixture.Default.articleProfileModel
 
         @Test
-        fun `should return empty list given tag and authorName not required when no articles exist`() {
+        fun `should return empty list given tag and authorName not required and no articles exist`()  {
             every {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
             } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
-            } returns emptyList()
 
-            every { service.findArticleById(any()) } returns singleArticleProfileEntity
+            every { service.findArticleById(any()) } returns articleProfileModel
 
             val retrieveArticles = service.retrieveArticles("", "", limit, offset)
 
@@ -207,31 +198,23 @@ class ArticleServiceTest{
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
             }
             verify(inverse = true) {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(any(), any(), any(), any())
             }
         }
 
         @Test
-        fun `should return found articles given tag and authorName not required when articles exist`() {
+        fun `should return found articles given tag and authorName not required and articles exist`() {
             every {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-            } returns listOf(articleEntity)
-            every {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
-            } returns emptyList()
+            } returns listOf(articleModel)
+
 
             val articleService = mockkClass(ArticleService::class)
-            every { articleService.findArticleById(any()) } returns singleArticleProfileEntity
-            every { articleRepository.findArticleById(any()) } returns articleEntity
-            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
+            every { articleService.findArticleById(any()) } returns articleProfileModel
+            every { articleRepository.findArticleById(any()) } returns articleModel
+            every { userInfoRepository.findUserById(any()) } returns userInfoModel
 
             val retrieveArticles = service.retrieveArticles("", "", limit, offset)
 
@@ -240,28 +223,19 @@ class ArticleServiceTest{
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
             }
             verify(inverse = true) {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(any(), any(), any(), any())
             }
         }
 
         @Test
         fun `should return empty list given tag required and authorName not required when no articles exist`() {
             every {
-                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-            } returns emptyList()
-            every {
                 articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
             } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
-            } returns emptyList()
 
-            every { service.findArticleById(any()) } returns singleArticleProfileEntity
+            every { service.findArticleById(any()) } returns articleProfileModel
 
             val retrieveArticles = service.retrieveArticles(tag, "", limit, offset)
 
@@ -271,30 +245,21 @@ class ArticleServiceTest{
             }
             verify(inverse = true) {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(any(), any(), any(), any())
             }
         }
 
         @Test
         fun `should return found articles given tag required and authorName not required when articles exist`() {
             every {
-                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-            } returns emptyList()
-            every {
                 articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-            } returns listOf(articleEntity)
-            every {
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
-            } returns emptyList()
+            } returns listOf(articleModel)
 
             val articleService = mockkClass(ArticleService::class)
-            every { articleService.findArticleById(any()) } returns singleArticleProfileEntity
-            every { articleRepository.findArticleById(any()) } returns articleEntity
-            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
+            every { articleService.findArticleById(any()) } returns articleProfileModel
+            every { articleRepository.findArticleById(any()) } returns articleModel
+            every { userInfoRepository.findUserById(any()) } returns userInfoModel
 
             val retrieveArticles = service.retrieveArticles(tag, "", limit, offset)
 
@@ -304,28 +269,19 @@ class ArticleServiceTest{
             }
             verify(inverse = true) {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(any(), any(), any(), any())
             }
         }
 
         @Test
         fun `should return empty list given tag not required and authorName required when no articles exist`() {
             every {
-                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-            } returns emptyList()
-            every {
                 articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
             } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
-            } returns emptyList()
 
-            every { userInfoRepository.findByUserName(any()) } returns userInfoEntity
-            every { service.findArticleById(any()) } returns singleArticleProfileEntity
+            every { userInfoRepository.findByUserName(any()) } returns userInfoModel
+            every { service.findArticleById(any()) } returns articleProfileModel
 
             val retrieveArticles = service.retrieveArticles("", authorName, limit, offset)
 
@@ -334,32 +290,23 @@ class ArticleServiceTest{
                 articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
             }
             verify(inverse = true) {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(any(), any(), any(), any())
             }
         }
 
         @Test
         fun `should return found articles given tag not required and authorName required when articles exist`() {
             every {
-                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-            } returns emptyList()
-            every {
                 articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-            } returns listOf(articleEntity)
-            every {
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
-            } returns emptyList()
+            } returns listOf(articleModel)
 
             val articleService = mockkClass(ArticleService::class)
-            every { articleService.findArticleById(any()) } returns singleArticleProfileEntity
-            every { articleRepository.findArticleById(any()) } returns articleEntity
-            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
-            every { userInfoRepository.findByUserName(any()) } returns userInfoEntity
+            every { articleService.findArticleById(any()) } returns articleProfileModel
+            every { articleRepository.findArticleById(any()) } returns articleModel
+            every { userInfoRepository.findUserById(any()) } returns userInfoModel
+            every { userInfoRepository.findByUserName(any()) } returns userInfoModel
 
             val retrieveArticles = service.retrieveArticles("", authorName, limit, offset)
 
@@ -369,67 +316,49 @@ class ArticleServiceTest{
             }
             verify(inverse = true) {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(any(), any(), any(), any())
             }
         }
 
         @Test
         fun `should return empty list given tag required and authorName required when no articles exist and user not found`() {
             every {
-                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-            } returns emptyList()
-            every {
                 articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
             } returns emptyList()
 
 
             every { userInfoRepository.findByUserName(any()) } returns null
-            every { service.findArticleById(any()) } returns singleArticleProfileEntity
+            every { service.findArticleById(any()) } returns articleProfileModel
 
             val retrieveArticles = service.retrieveArticles(tag, authorName, limit, offset)
 
             assertThat(retrieveArticles).isEmpty()
             verify(inverse = true) {
-                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(any(), any(), any(), any())
             }
         }
 
         @Test
         fun `should return empty list given tag required and authorName required when no articles exist and user found`() {
             every {
-                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-            } returns emptyList()
-            every {
                 articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
             } returns emptyList()
 
 
-            every { userInfoRepository.findByUserName(any()) } returns userInfoEntity
-            every { service.findArticleById(any()) } returns singleArticleProfileEntity
+            every { userInfoRepository.findByUserName(any()) } returns userInfoModel
+            every { service.findArticleById(any()) } returns articleProfileModel
 
             val retrieveArticles = service.retrieveArticles(tag, authorName, limit, offset)
 
             assertThat(retrieveArticles).isEmpty()
             verify(inverse = true) {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(any(), any(), any())
             }
             verify {
                 articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
@@ -439,31 +368,22 @@ class ArticleServiceTest{
         @Test
         fun `should return found articles given tag required and authorName required when articles exist`() {
             every {
-                articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-            } returns emptyList()
-            every {
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
-            } returns emptyList()
-            every {
                 articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())
-            } returns listOf(articleEntity)
+            } returns listOf(articleModel)
 
             val articleService = mockkClass(ArticleService::class)
-            every { articleService.findArticleById(any()) } returns singleArticleProfileEntity
-            every { articleRepository.findArticleById(any()) } returns articleEntity
-            every { userInfoRepository.findByUserName(any()) } returns userInfoEntity
-            every { userInfoRepository.findUserById(any()) } returns userInfoEntity
+            every { articleService.findArticleById(any()) } returns articleProfileModel
+            every { articleRepository.findArticleById(any()) } returns articleModel
+            every { userInfoRepository.findByUserName(any()) } returns userInfoModel
+            every { userInfoRepository.findUserById(any()) } returns userInfoModel
 
             val retrieveArticles = service.retrieveArticles(tag, authorName, limit, offset)
 
             assertThat(retrieveArticles).isNotEmpty
             verify(inverse = true) {
                 articleRepository.findAllArticlesLimitIsAndOffsetIs(any(), any())
-                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(tag, any(), any())
-                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(authorId, any(), any())
+                articleRepository.findAllArticlesByTagAndLimitIsAndOffsetIs(any(), any(), any())
+                articleRepository.findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(any(), any(), any())
             }
             verify {
                 articleRepository.findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, any(), any())

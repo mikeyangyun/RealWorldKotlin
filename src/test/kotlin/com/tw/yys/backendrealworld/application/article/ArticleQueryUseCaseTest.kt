@@ -20,28 +20,28 @@ class ArticleQueryUseCaseTest{
 
     @Nested
     inner class WhenFindArticleById{
-        private val entity = ArticleFixture.Default.singleArticleProfileEntity
+        private val articleProfileModel = ArticleFixture.Default.articleProfileModel
         @Test
         fun `should get status is OK given article exist`() {
-            every { articleService.findArticleById(any()) } returns entity
+            every { articleService.findArticleById(any()) } returns articleProfileModel
 
             val responseDto = queryUseCase.findArticleById(1)
 
-            assertThat(responseDto).isEqualTo(entity.toDto())
+            assertThat(responseDto).isEqualTo(articleProfileModel.toDto())
         }
     }
 
     @Nested
     inner class WhenRetrieveArticles{
-        private val entity = ArticleFixture.Default.singleArticleProfileEntity
+        private val articleProfileModel = ArticleFixture.Default.articleProfileModel
 
         @Test
         fun `should return multiple articles successfully given article exist`(){
-            every { articleService.retrieveArticles(any(),any(), any(), any()) } returns listOf(entity)
+            every { articleService.retrieveArticles(any(),any(), any(), any()) } returns listOf(articleProfileModel)
 
             val retrieveArticles = articleService.retrieveArticles("tag", "name", 20, 0)
 
-            assertThat(retrieveArticles).isEqualTo(listOf(entity))
+            assertThat(retrieveArticles).isEqualTo(listOf(articleProfileModel))
         }
     }
 

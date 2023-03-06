@@ -1,6 +1,6 @@
 package com.tw.yys.backendrealworld.interfaces.inbound.dto
 
-import com.tw.yys.backendrealworld.interfaces.outbound.article.ArticleEntity
+import com.tw.yys.backendrealworld.interfaces.outbound.article.ArticleModel
 import java.time.Instant
 
 
@@ -10,7 +10,7 @@ data class CreateNewArticleRequest(
     val content: String,
     val tags: List<String>?,
 ){
-    fun toEntity(authorId: String) = ArticleEntity(
+    fun toEntity(authorId: String) = ArticleModel(
         authorId = authorId,
         title = title,
         description = description,

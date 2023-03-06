@@ -5,9 +5,9 @@ import com.tw.yys.backendrealworld.domain.common.errors.UserNotFoundException
 import com.tw.yys.backendrealworld.domain.common.model.UserProfile
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewArticleRequest
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateArticleRequest
-import com.tw.yys.backendrealworld.interfaces.outbound.article.ArticleEntity
-import com.tw.yys.backendrealworld.interfaces.outbound.article.response.SingleArticleProfileEntity
-import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoEntity
+import com.tw.yys.backendrealworld.interfaces.outbound.article.ArticleModel
+import com.tw.yys.backendrealworld.interfaces.outbound.article.response.ArticleProfileModel
+import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoModel
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,7 +15,7 @@ class ArticleService(
     private val articleRepository: ArticleRepository,
     private val userInfoRepository: UserInfoRepository
 ) {
-    fun createNewArticle(userId: String, command: CreateNewArticleRequest): SingleArticleProfileEntity {
+    fun createNewArticle(userId: String, command: CreateNewArticleRequest): ArticleProfileModel {
         val existingUser = userInfoRepository.findUserById(userId) ?: throw UserNotFoundException()
         val author = getUserProfile(existingUser)
         val entity = command.toEntity(userId)
@@ -26,8 +26,8 @@ class ArticleService(
 
     private fun singleArticleProfileEntity(
         author: UserProfile,
-        savedArticle: ArticleEntity
-    ) = SingleArticleProfileEntity(
+        savedArticle: ArticleModel
+    ) = ArticleProfileModel(
         author = author,
         articleId = savedArticle.articleId,
         title = savedArticle.title,
@@ -39,7 +39,7 @@ class ArticleService(
         updatedAt = savedArticle.updatedAt,
     )
 
-    fun updateArticle(articleId: Long, request: UpdateArticleRequest): SingleArticleProfileEntity {
+    fun updateArticle(articleId: Long, request: UpdateArticleRequest): ArticleProfileModel {
         val existingArticle = articleRepository.findArticleById(articleId) ?: throw ArticleNotFoundException()
 
         val existingUser = userInfoRepository.findUserById(existingArticle.authorId) ?: throw UserNotFoundException()
@@ -55,7 +55,7 @@ class ArticleService(
         return singleArticleProfileEntity(author, updated)
     }
 
-    private fun getUserProfile(existingUser: UserInfoEntity): UserProfile {
+    private fun getUserProfile(existingUser: UserInfoModel): UserProfile {
         val author = UserProfile(
             username = existingUser.username,
             bio = existingUser.bio,
@@ -64,7 +64,7 @@ class ArticleService(
         return author
     }
 
-    fun findArticleById(articleId: Long): SingleArticleProfileEntity {
+    fun findArticleById(articleId: Long): ArticleProfileModel {
         val foundArticle = articleRepository.findArticleById(articleId) ?: throw ArticleNotFoundException()
         val existingUser = userInfoRepository.findUserById(foundArticle.authorId) ?: throw UserNotFoundException()
 
@@ -77,7 +77,7 @@ class ArticleService(
         articleRepository.deleteArticleById(articleId)
     }
 
-    fun retrieveArticles(tag: String, authorName: String, limit: Int, offset: Int): List<SingleArticleProfileEntity> {
+    fun retrieveArticles(tag: String, authorName: String, limit: Int, offset: Int): List<ArticleProfileModel> {
         if (tag.isEmpty() && authorName.isEmpty()) {
             val articleEntityList = articleRepository.findAllArticlesLimitIsAndOffsetIs(limit, offset)
             return articleEntityList.map {
@@ -90,6 +90,7 @@ class ArticleService(
                 findArticleById(it.articleId)
             }
         }
+
         if (tag.isEmpty() && authorName.isNotEmpty()) {
             val user = userInfoRepository.findByUserName(authorName) ?: return emptyList()
 
@@ -110,27 +111,27 @@ class ArticleService(
 }
 
 interface ArticleRepository{
-    fun save(entity: ArticleEntity): ArticleEntity
-    fun findArticleById(articleId: Long): ArticleEntity?
+    fun save(entity: ArticleModel): ArticleModel
+    fun findArticleById(articleId: Long): ArticleModel?
     fun deleteArticleById(articleId: Long)
     fun findAllArticlesLimitIsAndOffsetIs(
         limit: Int,
         offset: Int
-    ): List<ArticleEntity>
+    ): List<ArticleModel>
     fun findAllArticlesByTagAndLimitIsAndOffsetIs(
         tag: String,
         limit: Int,
         offset: Int
-    ): List<ArticleEntity>
+    ): List<ArticleModel>
     fun findAllArticlesByAuthorIdAndLimitIsAndOffsetIs(
         authorId: String,
         limit: Int,
         offset: Int
-    ): List<ArticleEntity>
+    ): List<ArticleModel>
     fun findAllArticlesByTagAndAuthorIdAndLimitIsAndOffsetIs(
         tag: String,
         authorId: String,
         limit: Int,
         offset: Int
-    ): List<ArticleEntity>
+    ): List<ArticleModel>
 }

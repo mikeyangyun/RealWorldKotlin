@@ -26,7 +26,7 @@ data class ArticlePo(
     @Column(name = "created_at") val createdAt: Instant?,
     @Column(name = "updated_at") var updatedAt: Instant?
 ) {
-    fun toDomain() = ArticleEntity(
+    fun toDomain() = ArticleModel(
         articleId = id,
         authorId = authorId,
         title = title,

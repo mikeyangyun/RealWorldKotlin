@@ -6,14 +6,14 @@ import com.tw.yys.backendrealworld.domain.common.errors.ExistingUserNameExceptio
 import com.tw.yys.backendrealworld.domain.common.errors.UserNotFoundException
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewAccountRequest
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateUserInfoRequest
-import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoEntity
+import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoModel
 import org.springframework.stereotype.Service
 
 @Service
 class UserInfoService(
     private val repository: UserInfoRepository
 ) {
-    fun createNewAccount(command: CreateNewAccountRequest): UserInfoEntity {
+    fun createNewAccount(command: CreateNewAccountRequest): UserInfoModel {
         val existingUsername = repository.findByUserName(command.username)
         val existingEmail = repository.findByEmail(command.email)
 
@@ -24,11 +24,11 @@ class UserInfoService(
         return repository.save(command.toEntity())
     }
 
-    fun findUserById(userId: String): UserInfoEntity? {
+    fun findUserById(userId: String): UserInfoModel? {
         return repository.findUserById(userId)
     }
 
-    fun updateUserInfo(userId: String, command: UpdateUserInfoRequest): UserInfoEntity {
+    fun updateUserInfo(userId: String, command: UpdateUserInfoRequest): UserInfoModel {
         repository.findUserById(userId) ?: throw UserNotFoundException()
 
         val entity = command.toEntity(userId)
@@ -39,8 +39,8 @@ class UserInfoService(
 }
 
 interface UserInfoRepository {
-    fun save(entity: UserInfoEntity): UserInfoEntity
-    fun findByUserName(userName: String): UserInfoEntity?
-    fun findByEmail(email: String): UserInfoEntity?
-    fun findUserById(userId: String): UserInfoEntity?
+    fun save(entity: UserInfoModel): UserInfoModel
+    fun findByUserName(userName: String): UserInfoModel?
+    fun findByEmail(email: String): UserInfoModel?
+    fun findUserById(userId: String): UserInfoModel?
 }

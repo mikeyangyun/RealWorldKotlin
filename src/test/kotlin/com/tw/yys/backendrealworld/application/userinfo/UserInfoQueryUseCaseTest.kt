@@ -23,7 +23,7 @@ class UserInfoQueryUseCaseTest{
     @Nested
     inner class WhenFindUserById {
         private val userId = "fake id for user"
-        private val entity = UserInfoFixture.Default.userInfoEntity
+        private val entity = UserInfoFixture.Default.userInfoModel
         private val responseDto = UserInfoFixture.Default.userInfoResponseDto
 
         @Test

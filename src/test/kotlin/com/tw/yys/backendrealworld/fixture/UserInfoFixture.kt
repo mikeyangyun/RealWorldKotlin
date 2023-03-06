@@ -3,7 +3,7 @@ package com.tw.yys.backendrealworld.fixture
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.CreateNewAccountRequest
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UpdateUserInfoRequest
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.UserInfoResponseDto
-import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoEntity
+import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.UserInfoModel
 
 object UserInfoFixture {
     object Default {
@@ -12,7 +12,7 @@ object UserInfoFixture {
             email = "jack@gmail.com",
             password = "password"
         )
-        val userInfoEntity = UserInfoEntity(
+        val userInfoModel = UserInfoModel(
             id = "fake id for test",
             username = "jack",
             email = "jack@gmail.com",
@@ -23,7 +23,6 @@ object UserInfoFixture {
         val userInfoResponseDto = UserInfoResponseDto(
             username = "jack",
             email = "jack@gmail.com",
-            password = "password",
             bio = null,
             image = null
         )
@@ -35,7 +34,7 @@ object UserInfoFixture {
             image = "image for user"
         )
 
-        val updateUserInfoEntity = UserInfoEntity(
+        val updateUserInfoModel = UserInfoModel(
             id = "fake id for test",
             username = "jack",
             email = "jack@gmail.com",
@@ -48,7 +47,6 @@ object UserInfoFixture {
         val updateUserInfoResponseDto = UserInfoResponseDto(
             username = "jack",
             email = "jack@gmail.com",
-            password = "password",
             bio ="https://realWorld.bios",
             image = "image for user"
         )

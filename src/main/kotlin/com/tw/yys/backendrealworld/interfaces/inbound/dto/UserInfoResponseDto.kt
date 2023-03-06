@@ -5,7 +5,6 @@ import com.tw.yys.backendrealworld.interfaces.outbound.userInfo.response.UserInf
 data class UserInfoResponseDto(
     val username: String,
     val email: String,
-    val password: String,
     val bio: String?,
     val image: String?
 ){

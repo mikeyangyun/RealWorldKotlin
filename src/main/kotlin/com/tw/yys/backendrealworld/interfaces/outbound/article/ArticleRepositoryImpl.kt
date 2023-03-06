@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component
 class ArticleRepositoryImpl(
     private val dao: ArticleDao
 ): ArticleRepository {
-    override fun save(entity: ArticleEntity): ArticleEntity {
+    override fun save(entity: ArticleModel): ArticleModel {
         return dao.save(entity.toPo()).toDomain()
     }
 
-    override fun findArticleById(articleId: Long): ArticleEntity? {
+    override fun findArticleById(articleId: Long): ArticleModel? {
         return dao.findTopById(articleId)?.toDomain()
     }
 
@@ -22,7 +22,7 @@ class ArticleRepositoryImpl(
     override fun findAllArticlesLimitIsAndOffsetIs(
         limit: Int,
         offset: Int
-    ): List<ArticleEntity> {
+    ): List<ArticleModel> {
         return dao.findAllArticlesLimitIsAndOffsetIs(limit, offset).map { it.toDomain() }
     }
 
@@ -30,7 +30,7 @@ class ArticleRepositoryImpl(
         authorId: String,
         limit: Int,
         offset: Int
-    ): List<ArticleEntity> {
+    ): List<ArticleModel> {
         return dao.findArticleByAuthorIdAndLimitIsAndOffsetIs(authorId, limit, offset).map { it.toDomain() }
     }
 
@@ -39,7 +39,7 @@ class ArticleRepositoryImpl(
         authorId: String,
         limit: Int,
         offset: Int
-    ): List<ArticleEntity> {
+    ): List<ArticleModel> {
         return dao.findArticleByTagAndAuthorIdAndLimitIsAndOffsetIs(tag, authorId, limit, offset).map { it.toDomain() }
     }
 
@@ -47,7 +47,7 @@ class ArticleRepositoryImpl(
         tag: String,
         limit: Int,
         offset: Int
-    ): List<ArticleEntity> {
+    ): List<ArticleModel> {
         return dao.findArticleByTagAndLimitIsAndOffsetIs(tag, limit, offset).map { it.toDomain() }
     }
 }

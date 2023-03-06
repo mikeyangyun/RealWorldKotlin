@@ -4,7 +4,7 @@ import com.tw.yys.backendrealworld.domain.common.model.UserProfile
 import com.tw.yys.backendrealworld.interfaces.inbound.dto.SingleArticleProfileResponseDto
 import java.time.Instant
 
-data class SingleArticleProfileEntity(
+data class ArticleProfileModel(
     val articleId: Long,
     val author: UserProfile,
     val title: String,

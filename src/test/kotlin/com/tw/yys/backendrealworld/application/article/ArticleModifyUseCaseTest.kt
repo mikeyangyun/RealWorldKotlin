@@ -22,27 +22,27 @@ class ArticleModifyUseCaseTest {
     @Nested
     inner class WhenCreateNewArticle{
         private val request = ArticleFixture.Default.createNewArticleRequest
-        private val entity = ArticleFixture.Default.singleArticleProfileEntity
+        private val articleProfileModel = ArticleFixture.Default.articleProfileModel
         @Test
         fun `should create new article given successfully called`(){
-            every { articleService.createNewArticle(userId, request) } returns entity
+            every { articleService.createNewArticle(userId, request) } returns articleProfileModel
 
             val responseDto = modifyUseCase.createNewArticle(userId, request)
 
-            assertThat(responseDto).isEqualTo(entity.toDto())
+            assertThat(responseDto).isEqualTo(articleProfileModel.toDto())
         }
     }
     @Nested
     inner class WhenUpdateArticle{
         private val request = ArticleFixture.Default.updateArticleRequest
-        private val entity = ArticleFixture.Default.singleArticleProfileEntity
+        private val articleProfileModel = ArticleFixture.Default.articleProfileModel
         @Test
         fun `should update article successfully given article exist`(){
-            every { articleService.updateArticle(any(), request) } returns entity
+            every { articleService.updateArticle(any(), request) } returns articleProfileModel
 
             val responseDto = modifyUseCase.updateArticle(1, request)
 
-            assertThat(responseDto).isEqualTo(entity.toDto())
+            assertThat(responseDto).isEqualTo(articleProfileModel.toDto())
         }
     }
 

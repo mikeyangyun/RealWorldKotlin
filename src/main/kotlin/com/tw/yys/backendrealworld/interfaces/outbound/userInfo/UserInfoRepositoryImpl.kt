@@ -7,18 +7,18 @@ import org.springframework.stereotype.Component
 class UserInfoRepositoryImpl(
     private val dao: UserInfoDao
 ): UserInfoRepository {
-    override fun save(entity: UserInfoEntity): UserInfoEntity {
+    override fun save(entity: UserInfoModel): UserInfoModel {
         return dao.save(entity.toPo()).toDomain()
     }
 
-    override fun findByUserName(userName: String): UserInfoEntity? {
+    override fun findByUserName(userName: String): UserInfoModel? {
         return dao.findTopByUsername(userName)?.toDomain()
     }
-    override fun findByEmail(email: String): UserInfoEntity? {
+    override fun findByEmail(email: String): UserInfoModel? {
         return dao.findTopByEmail(email)?.toDomain()
     }
 
-    override fun findUserById(userId: String): UserInfoEntity? {
+    override fun findUserById(userId: String): UserInfoModel? {
         return dao.findTopById(userId)?.toDomain()
     }
 }

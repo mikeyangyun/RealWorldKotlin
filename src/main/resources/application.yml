@@ -13,13 +13,13 @@ spring:
     generate-ddl: false
     show-sql: true
   datasource:
-    url: jdbc:postgres://localhost:3306/postgres
+    url: jdbc:postgres://localhost:5432/postgres
     username: admin
     password: password
   flyway:
     enabled: true
     out-of-order: true
-    url: jdbc:postgres://localhost:3306/postgres
+    url: jdbc:postgres://localhost:5432/postgres
     username: admin
     password: password
     clean-disabled: true

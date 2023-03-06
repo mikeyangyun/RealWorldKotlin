@@ -12,16 +12,19 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@RequestMapping("/articles")
 class ArticleController(
     private val articleQueryUseCase: ArticleQueryUseCase,
     private val articleModifyUseCase: ArticleModifyUseCase
 ) {
-    @PostMapping("/articles")
+
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     fun createNewArticle(
         @RequestParam userId: String,
@@ -30,7 +33,7 @@ class ArticleController(
         return articleModifyUseCase.createNewArticle(userId, request).toResponse()
     }
 
-    @PostMapping("/articles/{id}")
+    @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun updateArticle(
         @PathVariable id: Long,
@@ -39,7 +42,7 @@ class ArticleController(
         return articleModifyUseCase.updateArticle(id, request).toResponse()
     }
 
-    @GetMapping("/articles/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun findArticleById(
         @PathVariable id: Long,
@@ -47,7 +50,7 @@ class ArticleController(
         return articleQueryUseCase.findArticleById(id).toResponse()
     }
 
-    @DeleteMapping("/articles/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun deleteArticle(
         @PathVariable id: Long,
@@ -55,7 +58,7 @@ class ArticleController(
         articleModifyUseCase.deleteArticleById(id)
     }
 
-    @GetMapping("articles")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun retrieveArticles(
         @RequestParam(defaultValue = "",required = false) tag: String,
