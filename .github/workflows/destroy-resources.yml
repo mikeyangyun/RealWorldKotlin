@@ -1,4 +1,4 @@
-name: service-deployment
+name: destroy resources
 
 on:
   workflow_dispatch:
