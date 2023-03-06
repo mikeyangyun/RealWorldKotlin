@@ -41,8 +41,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 
-      - name: Create a New S3 Bucket
-        run: aws s3 mb s3://yysBucket
+#      - name: Create a New S3 Bucket
+#        run: aws s3 mb s3://yys-bucket
 
       - name: Create a repository in ECR
         run: aws ecr create-repository --repository-name demo-repository --image-scanning-configuration scanOnPush=true --region us-east-1
