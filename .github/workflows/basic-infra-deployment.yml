@@ -1,0 +1,66 @@
+name: Basic infra deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy_terraform:
+    name: Deploy with terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build the Image
+        run: docker build -t myapp .
+
+      - name: install aws cli
+        run: sudo apt-get update && sudo apt-get install -y awscli
+
+      - name: Set up AWS credentials
+        run: |
+          mkdir -p ~/.aws
+          touch ~/.aws/credentials
+          echo "[default]
+          aws_access_key_id = ${AWS_ACCESS_KEY_ID}
+          aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+
+      - name: Create a New S3 Bucket
+        run: aws s3 mb s3://yysBucket
+
+      - name: Create a repository in ECR
+        run: aws ecr create-repository --repository-name demo-repository --image-scanning-configuration scanOnPush=true --region us-east-1
+
+      - name: Login to AWS
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 316682785549.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Tag the image
+        run: docker tag myapp:latest 316682785549.dkr.ecr.us-east-1.amazonaws.com/demo-repository:myapp
+
+      - name: Push image to ECR
+        run: docker push 316682785549.dkr.ecr.us-east-1.amazonaws.com/demo-repository:myapp
+
+      - name: "Format terraform"
+        run: cd ./deployment/basic && terraform fmt
+
+      - name: "Initialize terraform"
+        run: cd ./deployment/basic && terraform init
+
+      - name: "Validate terraform"
+        run: cd ./deployment/basic && terraform validate
+
+      - name: "Run terraform apply"
+        run: cd ./deployment/basic && terraform apply -auto-approve
+
+      - name: Copy Lock File to S3 Bucket
+        run: cd ./deployment/basic && mkdir backup && cp terraform.tfstate terraform.tfstate.backup backup && aws s3 mv backup s3://yysBucket/backup --recursive
+
+
+

@@ -1,0 +1,75 @@
+name: service-deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build the Image
+        run: docker build -t myapp .
+
+      - name: install aws cli
+        run: sudo apt-get update && sudo apt-get install -y awscli
+
+      - name: Set up AWS credentials
+        run: |
+          mkdir -p ~/.aws
+          touch ~/.aws/credentials
+          echo "[default]
+          aws_access_key_id = ${AWS_ACCESS_KEY_ID}
+          aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Delete a repository named demo-repository if exists in ECR
+        run: aws ecr delete-repository --repository-name demo-repository --force --region us-east-1
+
+      - name: Create a repository in ECR
+        run: aws ecr create-repository --repository-name demo-repository --image-scanning-configuration scanOnPush=true --region us-east-1
+
+      - name: Login to AWS
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 316682785549.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Tag the image
+        run: docker tag myapp:latest 316682785549.dkr.ecr.us-east-1.amazonaws.com/demo-repository:myapp
+
+      - name: Push image to ECR
+        run: docker push 316682785549.dkr.ecr.us-east-1.amazonaws.com/demo-repository:myapp
+
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v1
+
+      - name: Copy Lock File to Local
+        run: cd ./deployment/basic && aws s3 cp s3://tgsbucket/backup/terraform.tfstate . && aws s3 cp s3://tgsbucket/backup/terraform.tfstate.backup .
+
+      - name: "Format terraform"
+        run: cd ./deployment/basic && terraform fmt
+
+      - name: "Initialize terraform"
+        run: cd ./deployment/basic && terraform init
+
+      - name: "Validate terraform"
+        run: cd ./deployment/basic && terraform validate
+
+      - name: "Run terraform apply"
+        run: cd ./deployment/basic && terraform apply -auto-approve
+
+      - name: Delete Lock File of S3 Bucket
+        run: aws s3 rm s3://yysBucket/backup/terraform.tfstate && aws s3 rm s3://yysBucket/backup/terraform.tfstate.backup
+
+      - name: Copy Lock File to S3 Bucket
+        run: aws s3 cp terraform.tfstate s3://yysBucket/backup && aws s3 cp terraform.tfstate.backup s3://yysBucket/backup
+
+
+
