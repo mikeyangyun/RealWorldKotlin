@@ -69,7 +69,7 @@ jobs:
         run: cd ./deployment/basic && terraform apply -auto-approve
 
       - name: Copy Lock File to S3 Bucket
-        run: cd ./deployment/basic && mkdir backup && cp terraform.tfstate terraform.tfstate.backup backup && aws s3 mv backup s3://yysBucket/backup --recursive
+        run: cd ./deployment/basic && mkdir backup && cp terraform.tfstate terraform.tfstate.backup backup && aws s3 mv backup s3://yys-bucket/backup --recursive
 
 
 
