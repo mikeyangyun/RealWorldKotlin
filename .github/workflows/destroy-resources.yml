@@ -20,6 +20,10 @@ jobs:
           echo "[default]
           aws_access_key_id = ${AWS_ACCESS_KEY_ID}
           aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/credentials
+          
+          echo "[default]
+                    region = us-east-1
+                    output = json" > ~/.aws/config
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -31,7 +35,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
 
       - name: Copy Lock File to Local
-        run: cd ./deployment/basic && aws s3 cp s3://tgsbucket/backup/terraform.tfstate . && aws s3 cp s3://tgsbucket/backup/terraform.tfstate.backup .
+        run: cd ./deployment/basic && aws s3 cp s3://tgsbucket/backup/terraform.tfstate .
 
       - name: "Format terraform"
         run: cd ./deployment/basic && terraform fmt
