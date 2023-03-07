@@ -1,11 +1,11 @@
 spring:
   flyway:
     driverClassName: org.postgresql.Driver
-    url: "postgres.c1isl1idqzxk.us-east-1.rds.amazonaws.com/postgres"
+    url: "jdbc:postgresql://postgres.c1isl1idqzxk.us-east-1.rds.amazonaws.com/postgres:5432/postgres"
     user: ${USERNAME}
     password: ${PASSWORD}
     enabled: true
   datasource:
-    url: postgres.c1isl1idqzxk.us-east-1.rds.amazonaws.com/postgres
+    url: jdbc:postgresql://postgres.c1isl1idqzxk.us-east-1.rds.amazonaws.com/postgres:5432/postgres
     username: ${USERNAME}
     password: ${PASSWORD}
