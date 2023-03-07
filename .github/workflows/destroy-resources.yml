@@ -35,7 +35,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
 
       - name: Copy Lock File to Local
-        run: cd ./deployment/basic && aws s3 cp s3://tgsbucket/backup/terraform.tfstate .
+        run: cd ./deployment/basic && aws s3 cp s3://yys-bucket/backup/terraform.tfstate .
 
       - name: "Format terraform"
         run: cd ./deployment/basic && terraform fmt
@@ -50,7 +50,7 @@ jobs:
         run: cd ./deployment/basic && terraform destroy -auto-approve
 
       - name: Remove S3 Bucket
-        run: aws s3 rb s3://yysBucket
+        run: aws s3 rb s3://yys-bucket
 
 
 
