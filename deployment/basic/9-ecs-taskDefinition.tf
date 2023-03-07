@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "task_definition_demo" {
         "secretOptions": null,
         "options": {
           "awslogs-group": "/cluster_1/ecs_service_1",
-          "awslogs-region": "ap-southeast-1",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "cluster_1"
         }
       },
