@@ -57,7 +57,7 @@ jobs:
         run: docker push 316682785549.dkr.ecr.us-east-1.amazonaws.com/demo-repository:myapp
 
       - name: Copy Lock File to Local
-        run: cd ./deployment/basic && aws s3 cp s3://yys-bucket/keys.tfvars .
+        run: aws s3 cp s3://yys-bucket/keys.tfvars ./deployment/basic
 
       - name: "Format terraform"
         run: cd ./deployment/basic && terraform fmt
