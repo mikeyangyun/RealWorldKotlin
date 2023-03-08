@@ -1,11 +1,22 @@
+#spring:
+#  flyway:
+#    driverClassName: org.postgresql.Driver
+#    url: "jdbc:postgresql://postgres.c1isl1idqzxk.us-east-1.rds.amazonaws.com:5432/postgres"
+#    user: ${USERNAME}
+#    password: ${PASSWORD}
+#    enabled: true
+#  datasource:
+#    url: "jdbc:postgresql://postgres.c1isl1idqzxk.us-east-1.rds.amazonaws.com:5432/postgres"
+#    username: ${USERNAME}
+#    password: ${PASSWORD}
+
 spring:
+  jpa:
+    show-sql: true
+    open-in-view: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
   flyway:
-    driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://postgres.c1isl1idqzxk.us-east-1.rds.amazonaws.com:5432/postgres"
-    user: ${USERNAME}
-    password: ${PASSWORD}
-    enabled: true
-  datasource:
-    url: "jdbc:postgresql://postgres.c1isl1idqzxk.us-east-1.rds.amazonaws.com:5432/postgres"
-    username: ${USERNAME}
-    password: ${PASSWORD}
+    locations: classpath:db/local

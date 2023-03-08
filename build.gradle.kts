@@ -39,8 +39,8 @@ dependencies {
     /*
     use postgres
      */
+    runtimeOnly("com.h2database:h2:2.1.210")
     runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("com.h2database:h2")
     annotationProcessor("org.projectlombok:lombok")
     // test
     implementation("com.nimbusds:nimbus-jose-jwt:9.22")
