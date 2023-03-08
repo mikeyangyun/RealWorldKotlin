@@ -64,16 +64,16 @@ jobs:
         run: cd ./deployment/basic && aws s3 cp s3://yys-bucket/backup/terraform.tfstate .
 
       - name: "Format terraform"
-        run: cd ./deployment/basic && terraform fmt
+        run: cd ./deployment/service && terraform fmt
 
       - name: "Initialize terraform"
-        run: cd ./deployment/basic && terraform init
+        run: cd ./deployment/service && terraform init
 
       - name: "Validate terraform"
-        run: cd ./deployment/basic && terraform validate
+        run: cd ./deployment/service && terraform validate
 
       - name: "Run terraform apply"
-        run: cd ./deployment/basic && terraform apply -auto-approve
+        run: cd ./deployment/service && terraform apply -auto-approve
 
       - name: Delete Lock File of S3 Bucket
         run: aws s3 rm s3://yys-bucket/backup/terraform.tfstate
