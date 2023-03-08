@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS ARTICLES
     title           VARCHAR(255) NOT NULL,
     description     VARCHAR(128) NOT NULL,
     content         VARCHAR(255) NOT NULL,
+    tags            VARCHAR(255),
     favorites_count INTEGER,
     created_at      TIMESTAMP,
     updated_at      TIMESTAMP
