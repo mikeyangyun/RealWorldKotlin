@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    show-sql: true
+    open-in-view: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+  flyway:
+    locations: classpath:db/local
